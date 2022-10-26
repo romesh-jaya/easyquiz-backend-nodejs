@@ -30,6 +30,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
       );
   }
 
+  // Note: we return status 200 in some cases as we need to send a JS object
   try {
     await createUserWithEmailAndPassword(auth, email, password);
   } catch (err) {
@@ -37,12 +38,12 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     console.error('Error while signing up: ', error.message);
     switch (error.code) {
       case 'auth/email-already-in-use':
-        return res.status(400).send({
+        return res.status(200).send({
           error: 'Email address is already in use',
           isGeneralError: true,
         });
       default:
-        return res.status(400).send({
+        return res.status(200).send({
           error: 'Unknown error occured while trying to signup',
           isGeneralError: false,
         });
@@ -66,6 +67,10 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   } catch (err) {
     const error = err as IPostgresError;
     console.error('Error while inserting User record to DB: ', error.stack);
+    return res.status(200).send({
+      error: 'Unknown error occured while trying to signup',
+      isGeneralError: false,
+    });
   }
 
   console.log('Successfully registered user: ', email);
