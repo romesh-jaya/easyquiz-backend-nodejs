@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../common/firebase';
-import { IFirebaseAuthError } from '../../common/interfaces/IFirebaseAuthError';
-import { IPostgresError } from '../../common/interfaces/IPostgresError';
-import postgresClient from '../../common/postgres';
+import { auth } from '../../../common/firebase';
+import { IFirebaseAuthError } from '../../../common/interfaces/IFirebaseAuthError';
+import { IPostgresError } from '../../../common/interfaces/IPostgresError';
+import postgresClient from '../../../common/postgres';
 
 export interface ISignupError {
   error: string;

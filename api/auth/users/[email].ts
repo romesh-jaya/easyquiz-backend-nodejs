@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import postgresClient from '../../common/postgres';
+import postgresClient from '../../../common/postgres';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   let data;
