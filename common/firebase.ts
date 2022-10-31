@@ -1,19 +1,26 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import admin from 'firebase-admin';
+import { getAuth } from 'firebase-admin/auth';
 
-const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
+import serviceAccount from '../keys/easyquiz-auth-firebase-adminsdk.json';
+
+const params = {
+  type: serviceAccount.type,
+  projectId: serviceAccount.project_id,
+  privateKeyId: serviceAccount.private_key_id,
+  privateKey: serviceAccount.private_key,
+  clientEmail: serviceAccount.client_email,
+  clientId: serviceAccount.client_id,
+  authUri: serviceAccount.auth_uri,
+  tokenUri: serviceAccount.token_uri,
+  authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
+  clientC509CertUrl: serviceAccount.client_x509_cert_url,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+admin.initializeApp({
+  credential: admin.credential.cert(params),
+});
 
 //initialize firebase auth
 const auth = getAuth();
 
-export { app, auth };
+export { admin, auth };

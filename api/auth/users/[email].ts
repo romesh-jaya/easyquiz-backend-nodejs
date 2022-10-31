@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import postgresClient from '../../../common/postgres';
+import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
+import { UserInfo } from '../../../types/UserInfo';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   let data;
@@ -12,11 +14,13 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     return res.status(405).end('Method Not Allowed');
   }
 
-  const { email } = req.query;
-
-  if (!email) {
-    return res.status(400).send('Error: email was found to be empty');
+  const userInfo: UserInfo = await getUserEmailFromAuthToken(req);
+  if (userInfo.error) {
+    return res.status(400).send(userInfo.error);
   }
+
+  // At this point, we definitely know the user's email
+  const email = userInfo.email ?? '';
 
   try {
     const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';

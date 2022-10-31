@@ -1,5 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../common/firebase';
 import { IFirebaseAuthError } from '../../../common/interfaces/IFirebaseAuthError';
 import { IPostgresError } from '../../../common/interfaces/IPostgresError';
@@ -32,12 +31,12 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
   // Note: we return status 200 in some cases as we need to send a JS object
   try {
-    await createUserWithEmailAndPassword(auth, email, password);
+    await auth.createUser({ email, password });
   } catch (err) {
     const error = err as IFirebaseAuthError;
     console.error('Error while signing up: ', error.message);
     switch (error.code) {
-      case 'auth/email-already-in-use':
+      case 'auth/email-already-exists':
         return res.status(200).send({
           error: 'Email address is already in use',
           isGeneralError: true,
