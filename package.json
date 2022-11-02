@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "@vercel/node": "^2.5.14",
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "firebase-admin": "^11.2.0",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "uuid": "^9.0.0"
   }
 }

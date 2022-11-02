@@ -30,7 +30,6 @@ CREATE TABLE "quiz" (
   "name" varchar(16) NOT NULL,
   "description" varchar(256) NOT NULL,
   "status" quiz_status DEFAULT 'unpublished',
-  "no_of_questions" integer,
   "question_order" varchar[],
   "pass_mark_percentage" numeric,
   "can_retake_quiz" boolean NOT NULL DEFAULT false,
@@ -77,3 +76,6 @@ ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("quiz_id") REFERENCES "quiz" ("id");
 ALTER TABLE "quiz" ADD FOREIGN KEY ("created_by_user") REFERENCES "quiz_user" ("email");
 
 ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("user_email") REFERENCES "quiz_user" ("email");
+
+--INDEXES
+CREATE UNIQUE INDEX name ON public.quiz (created_by_user, name);
