@@ -1,5 +1,5 @@
 import { VercelRequest } from '@vercel/node';
-import { UserInfo } from '../../types/UserInfo';
+import { UserInfo } from '../types/UserInfo';
 import { auth } from '../firebase';
 
 export const getAuthToken = (req: VercelRequest): string | null => {

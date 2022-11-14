@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import postgresClient from '../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
-import { UserInfo } from '../../../types/UserInfo';
+import { UserInfo } from '../../../common/types/UserInfo';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   let data;
