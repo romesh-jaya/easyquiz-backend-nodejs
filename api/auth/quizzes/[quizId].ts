@@ -1,29 +1,30 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../../../common/interfaces/IPostgresError';
 import postgresClient from '../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
 import { UserInfo } from '../../../common/types/UserInfo';
+import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
 import { createUpdateQuiz } from '../../../common/utils/quiz';
 
-export interface ISignupError {
-  error: string;
-  isGeneralError?: boolean;
-}
-
-const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
+const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
+  const { quizId } = req.query;
   const userInfo: UserInfo = await getUserEmailFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
 
-  // At this point, we definitely know the user's email
-  const email = userInfo.email ?? '';
-
   try {
-    const queryText =
-      'SELECT * FROM public.quiz WHERE created_by_user = $1 ORDER BY last_updated DESC';
-    const data = await postgresClient.query(queryText, [email]);
-    return res.status(200).send(data?.rows);
+    const queryText = 'SELECT * FROM public.quiz WHERE id = $1';
+    const quizData = await postgresClient.query(queryText, [quizId]);
+    const quizDataObject = quizData?.rows[0];
+
+    if (quizDataObject) {
+      const queryText = 'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
+      const questionData = await postgresClient.query(queryText, [quizId]);
+      quizDataObject.questions = questionData?.rows;
+      return res.status(200).send(quizDataObject);
+    }
+
+    return res.status(200).send({});
   } catch (err) {
     const error = err as IPostgresError;
     console.error('Error querying quiz table in DB: ', error.stack);
@@ -38,14 +39,14 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  if (req.method === 'POST') {
+  if (req.method === 'PUT') {
     return createUpdateQuiz(req, res);
   }
 
   if (req.method === 'GET') {
-    return getQuizzesForUser(req, res);
+    return getQuizWithDetails(req, res);
   }
 
-  res.setHeader('Allow', ['POST', 'GET']);
+  res.setHeader('Allow', ['PUT', 'GET']);
   return res.status(405).end('Method Not Allowed');
 }

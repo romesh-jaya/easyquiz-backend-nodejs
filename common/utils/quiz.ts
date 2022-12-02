@@ -7,9 +7,9 @@ import { UserInfo } from '../types/UserInfo';
 
 export const createUpdateQuiz = async (
   req: VercelRequest,
-  res: VercelResponse,
-  id?: string
+  res: VercelResponse
 ) => {
+  const { quizId } = req.query;
   const { quizName, description, passMarkPercentage } = req.body;
 
   if (!quizName || !description || !passMarkPercentage) {
@@ -33,16 +33,16 @@ export const createUpdateQuiz = async (
     const client = await postgresClient.connect();
     try {
       await client.query('BEGIN');
-      if (id) {
+      if (quizId) {
         const queryText =
           'UPDATE public.quiz SET name = $1, description = $2, pass_mark_percentage = $3 where id = $4';
         await client.query(queryText, [
           quizName,
           description,
           passMarkPercentage,
-          id,
+          quizId,
         ]);
-        console.log('Quiz updated: ', id);
+        console.log('Quiz updated: ', quizId);
       } else {
         const uuid = uuidv4();
         const queryText =

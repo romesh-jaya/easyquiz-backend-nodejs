@@ -9,11 +9,6 @@ CREATE TYPE "quiz_status" AS ENUM (
   'archived'
 );
 
-CREATE TYPE "question_type" AS ENUM (
-  'multiple_choice',
-  'single_choice'
-);
-
 CREATE TYPE "quiz_attempt_status" AS ENUM (
   'started',
   'completed'
@@ -42,7 +37,6 @@ CREATE TABLE "quiz_question" (
   "question_content" varchar(1024) NOT NULL,
   "answers" varchar NOT NULL,
   "revision" int NOT NULL DEFAULT 1,
-  "question_type" question_type NOT NULL,
   "last_updated" timestamp NOT NULL DEFAULT now(),
   PRIMARY KEY ("id", "quiz_id")
 );
@@ -78,4 +72,23 @@ ALTER TABLE "quiz" ADD FOREIGN KEY ("created_by_user") REFERENCES "quiz_user" ("
 ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("user_email") REFERENCES "quiz_user" ("email");
 
 --INDEXES
-CREATE UNIQUE INDEX name ON public.quiz (created_by_user, name);
+CREATE UNIQUE INDEX IDX_QUIZ_CREATED_BY_USER_NAME ON public.quiz (created_by_user, name);
+
+CREATE INDEX IDX_QUIZ_LAST_UPDATED ON public.quiz (last_updated);
+
+--TRIGGERS AND FUNCTIONS
+
+CREATE OR REPLACE FUNCTION trigger_set_timestamp_update()
+RETURNS TRIGGER 
+language plpgsql
+AS $$
+BEGIN
+  NEW.last_updated = NOW();
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER set_timestamp_update
+BEFORE UPDATE ON public.quiz
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp_update();
