@@ -12,9 +12,13 @@ const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
     return res.status(400).send(userInfo.error);
   }
 
+  // At this point, we definitely know the user's email
+  const email = userInfo.email ?? '';
+
   try {
-    const queryText = 'SELECT * FROM public.quiz WHERE id = $1';
-    const quizData = await postgresClient.query(queryText, [quizId]);
+    const queryText =
+      'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
+    const quizData = await postgresClient.query(queryText, [quizId, email]);
     const quizDataObject = quizData?.rows[0];
 
     if (quizDataObject) {

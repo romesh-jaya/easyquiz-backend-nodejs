@@ -35,12 +35,13 @@ export const createUpdateQuiz = async (
       await client.query('BEGIN');
       if (quizId) {
         const queryText =
-          'UPDATE public.quiz SET name = $1, description = $2, pass_mark_percentage = $3 where id = $4';
+          'UPDATE public.quiz SET name = $1, description = $2, pass_mark_percentage = $3 where id = $4 AND created_by_user = $5';
         await client.query(queryText, [
           quizName,
           description,
           passMarkPercentage,
           quizId,
+          email,
         ]);
         console.log('Quiz updated: ', quizId);
       } else {
