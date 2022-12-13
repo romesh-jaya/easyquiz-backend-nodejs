@@ -30,6 +30,7 @@ export const createUpdateQuiz = async (
 
   // Note: we return status 200 in some cases as we need to send a JS object
   try {
+    const uuid = uuidv4();
     const client = await postgresClient.connect();
     try {
       await client.query('BEGIN');
@@ -45,7 +46,6 @@ export const createUpdateQuiz = async (
         ]);
         console.log('Quiz updated: ', quizId);
       } else {
-        const uuid = uuidv4();
         const queryText =
           'INSERT INTO public.quiz(id, created_by_user, name, description, pass_mark_percentage, can_retake_quiz)  VALUES ($1, $2, $3, $4, $5, $6)';
         await client.query(queryText, [
@@ -59,6 +59,7 @@ export const createUpdateQuiz = async (
         console.log('Quiz saved: ', uuid);
       }
       await client.query('COMMIT');
+      res.status(200).send({ error: '', id: quizId ?? uuid });
     } catch (err) {
       const e = err as IPostgresError;
       if (e.code && e.code === '23505') {
@@ -81,6 +82,4 @@ export const createUpdateQuiz = async (
       isGeneralError: false,
     });
   }
-
-  res.status(200).send({ error: '' });
 };
