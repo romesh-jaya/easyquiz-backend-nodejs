@@ -2,7 +2,6 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../../../common/interfaces/IPostgresError';
 import postgresClient from '../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
-import { UserInfo } from '../../../common/types/UserInfo';
 import { createUpdateQuiz } from '../../../common/utils/quiz';
 
 export interface ISignupError {
@@ -11,7 +10,7 @@ export interface ISignupError {
 }
 
 const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
-  const userInfo: UserInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserEmailFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }

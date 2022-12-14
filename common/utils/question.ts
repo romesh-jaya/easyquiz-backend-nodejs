@@ -3,8 +3,8 @@ import { IPostgresError } from '../interfaces/IPostgresError';
 import postgresClient from '../postgres';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserEmailFromAuthToken } from './auth';
-import { UserInfo } from '../types/UserInfo';
 import { CRUDActionType } from '../enums/CRUDActionType';
+import { updateQuestionOrder } from './quiz';
 
 const checkUserAccess = async (
   actionType: number,
@@ -53,7 +53,7 @@ export const createUpdateDeleteQuestion = async (
       .send('Error: questionContent or answers was found to be empty');
   }
 
-  const userInfo: UserInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserEmailFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
@@ -83,6 +83,14 @@ export const createUpdateDeleteQuestion = async (
         const queryText = 'DELETE FROM public.quiz_question WHERE id = $1';
         await client.query(queryText, [questionId]);
         console.log('Question deleted: ', questionId);
+
+        // Update question order
+        await updateQuestionOrder(
+          client,
+          quizId as string,
+          questionId as string,
+          false
+        );
       } else if (actionType === CRUDActionType.Update) {
         const queryText =
           'UPDATE public.quiz_question SET question_content = $1, answers = $2 where id = $3';
@@ -94,6 +102,9 @@ export const createUpdateDeleteQuestion = async (
           'INSERT INTO public.quiz_question(id, quiz_id, question_content, answers)  VALUES ($1, $2, $3, $4)';
         await client.query(queryText, [uuid, quizId, questionContent, answers]);
         console.log('Question saved: ', uuid);
+
+        // Update question order
+        await updateQuestionOrder(client, quizId as string, uuid);
       }
 
       await client.query('COMMIT');

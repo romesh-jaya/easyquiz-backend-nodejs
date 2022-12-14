@@ -1,7 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import postgresClient from '../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
-import { UserInfo } from '../../../common/types/UserInfo';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   let data;
@@ -14,7 +13,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     return res.status(405).end('Method Not Allowed');
   }
 
-  const userInfo: UserInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserEmailFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }

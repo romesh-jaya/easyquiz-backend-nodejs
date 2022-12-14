@@ -3,7 +3,34 @@ import { IPostgresError } from '../interfaces/IPostgresError';
 import postgresClient from '../postgres';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserEmailFromAuthToken } from '../utils/auth';
-import { UserInfo } from '../types/UserInfo';
+
+export const updateQuestionOrder = async (
+  client: any,
+  quizId: string,
+  questionId: string,
+  isAdd: boolean = true
+) => {
+  const queryText = 'SELECT question_order FROM public.quiz WHERE id = $1';
+  const quizData = await client.query(queryText, [quizId]);
+  const quizDataObject = quizData?.rows[0];
+  if (quizDataObject) {
+    let questionOrderArray: string[] = quizDataObject.question_order || [];
+    if (isAdd) {
+      questionOrderArray.push(questionId);
+    } else {
+      questionOrderArray = questionOrderArray.filter(
+        (question) => question !== questionId
+      );
+    }
+
+    const queryText =
+      'UPDATE public.quiz SET question_order = $1 WHERE id = $2';
+    await client.query(queryText, [questionOrderArray, quizId]);
+    console.log('Question order updated for: ', quizId);
+    return;
+  }
+  throw new Error('Quiz Not found: ' + quizId);
+};
 
 export const createUpdateQuiz = async (
   req: VercelRequest,
@@ -20,7 +47,7 @@ export const createUpdateQuiz = async (
       );
   }
 
-  const userInfo: UserInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserEmailFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
