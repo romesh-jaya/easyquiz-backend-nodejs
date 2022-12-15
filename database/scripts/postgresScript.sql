@@ -76,7 +76,7 @@ CREATE UNIQUE INDEX IDX_QUIZ_CREATED_BY_USER_NAME ON public.quiz (created_by_use
 
 CREATE INDEX IDX_QUIZ_LAST_UPDATED ON public.quiz (last_updated);
 
---TRIGGERS AND FUNCTIONS
+--TRIGGER FUNCTIONS
 
 CREATE OR REPLACE FUNCTION trigger_set_timestamp_update()
 RETURNS TRIGGER 
@@ -88,7 +88,32 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION trigger_timestamp_update_on_quiz()
+RETURNS TRIGGER 
+language plpgsql
+AS $$
+BEGIN
+  UPDATE public.quiz
+  SET last_updated = NOW()
+  WHERE id = NEW.quiz_id;
+
+  RETURN NEW;
+END;
+$$;	
+
+--TRIGGERS 
+
 CREATE TRIGGER set_timestamp_update
 BEFORE UPDATE ON public.quiz
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp_update();
+
+CREATE TRIGGER set_timestamp_update_on_quiz
+BEFORE UPDATE OR INSERT OR DELETE ON public.quiz_question
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_timestamp_update_on_quiz();
+
+CREATE TRIGGER set_timestamp_update
+BEFORE UPDATE ON public.quiz_question
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp_update();
