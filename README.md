@@ -1,6 +1,6 @@
 # EasyQuiz Backend - NodeJS Serverless
 
-These are NodeJS serverless functions used to interface the DB and Authentication for EasyQuiz app.
+These are NodeJS serverless functions used to interface the Postgres DB and Authentication for EasyQuiz app.
 
 ## Technical details
 
