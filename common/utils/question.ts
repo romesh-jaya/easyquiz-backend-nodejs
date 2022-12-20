@@ -110,6 +110,13 @@ export const createUpdateDeleteQuestion = async (
       await client.query('COMMIT');
     } catch (err) {
       const e = err as IPostgresError;
+      if (e.code && e.code === 'ZZ999') {
+        await client.query('ROLLBACK');
+        return res.status(200).send({
+          error: e.message,
+          isGeneralError: true,
+        });
+      }
       await client.query('ROLLBACK');
       throw e;
     } finally {

@@ -88,18 +88,39 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION trigger_timestamp_update_on_quiz()
-RETURNS TRIGGER 
-language plpgsql
-AS $$
+CREATE OR REPLACE FUNCTION TRIGGER_TIMESTAMP_UPDATE_ON_QUIZ_FROM_QUESTION() RETURNS TRIGGER LANGUAGE PLPGSQL AS $$
+DECLARE
+  _quiz_status VARCHAR(20);
 BEGIN
-  UPDATE public.quiz
-  SET last_updated = NOW()
-  WHERE id = NEW.quiz_id;
+
+	IF TG_OP = 'DELETE' THEN
+		SELECT status
+		INTO _quiz_status
+		FROM public.quiz
+		WHERE id = OLD.quiz_id;
+
+		UPDATE public.quiz
+		SET last_updated = NOW()
+		WHERE id = OLD.quiz_id;
+	ELSE
+		SELECT status
+		INTO _quiz_status
+		FROM public.quiz
+		WHERE id = NEW.quiz_id;
+
+		UPDATE public.quiz
+		SET last_updated = NOW()
+		WHERE id = NEW.quiz_id;
+	END IF;
+
+	IF _quiz_status = 'published' OR _quiz_status = 'archived' THEN
+	  RAISE EXCEPTION 'Cannot add, delete or update questions when the quiz is in Published or Archived state.' USING ERRCODE = 'ZZ999';
+	END IF;
+
 
   RETURN NEW;
 END;
-$$;	
+$$;
 
 --TRIGGERS 
 
@@ -108,10 +129,10 @@ BEFORE UPDATE ON public.quiz
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp_update();
 
-CREATE TRIGGER set_timestamp_update_on_quiz
+CREATE TRIGGER set_timestamp_update_on_quiz_from_question
 BEFORE UPDATE OR INSERT OR DELETE ON public.quiz_question
 FOR EACH ROW
-EXECUTE PROCEDURE trigger_timestamp_update_on_quiz();
+EXECUTE PROCEDURE TRIGGER_TIMESTAMP_UPDATE_ON_QUIZ_FROM_QUESTION();
 
 CREATE TRIGGER set_timestamp_update
 BEFORE UPDATE ON public.quiz_question
