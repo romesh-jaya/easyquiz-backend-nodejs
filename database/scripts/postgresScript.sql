@@ -10,6 +10,8 @@ CREATE TYPE "quiz_status" AS ENUM (
 );
 
 CREATE TYPE "quiz_attempt_status" AS ENUM (
+  'unseen',
+  'seen',  
   'started',
   'completed'
 );
@@ -43,16 +45,19 @@ CREATE TABLE "quiz_question" (
 );
 
 CREATE TABLE "quiz_attempt" (
-  "id" uuid NOT NULL,
   "quiz_id" uuid NOT NULL,
-  "user_email" varchar(32) NOT NULL,
-  "status" quiz_attempt_status DEFAULT 'started',
+  "quiz_revision" int NOT NULL,
+  "quiz_taker" varchar(32) NOT NULL,
+  "status" quiz_attempt_status DEFAULT 'unseen',
   "questions" varchar NOT NULL,
   "answers" varchar,
-  "next_question_no" int NOT NULL,
-  "score" numeric,
+  "next_question_index" int,
+  "no_of_questions" int NOT NULL,
+  "no_of_correct_answers" int,
+  "pass_percentage" numeric NOT NULL,
+  "score_percentage" numeric,
   "last_updated" timestamp NOT NULL DEFAULT now(),
-  PRIMARY KEY ("id", "quiz_id")
+  PRIMARY KEY ("quiz_revision", "quiz_id", "quiz_taker")
 );
 
 CREATE TABLE "quiz_user" (
@@ -70,12 +75,14 @@ ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("quiz_id") REFERENCES "quiz" ("id");
 
 ALTER TABLE "quiz" ADD FOREIGN KEY ("created_by_user") REFERENCES "quiz_user" ("email");
 
-ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("user_email") REFERENCES "quiz_user" ("email");
+ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("quiz_taker") REFERENCES "quiz_user" ("email");
 
 --INDEXES
 CREATE UNIQUE INDEX IDX_QUIZ_CREATED_BY_USER_NAME ON public.quiz (created_by_user, name);
 
 CREATE INDEX IDX_QUIZ_LAST_UPDATED ON public.quiz (last_updated);
+
+CREATE INDEX IDX_QUIZ_ATTEMPT_LAST_UPDATED ON public.quiz_attempt (last_updated);
 
 --TRIGGER FUNCTIONS
 
