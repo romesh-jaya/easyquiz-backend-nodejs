@@ -28,6 +28,7 @@ CREATE TABLE "quiz" (
   "question_order" varchar[],
   "pass_mark_percentage" numeric,
   "can_retake_quiz" boolean NOT NULL DEFAULT false,
+  "revision" int NOT NULL DEFAULT 1,
   "last_updated" timestamp NOT NULL DEFAULT now()
 );
 
@@ -88,28 +89,41 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION TRIGGER_TIMESTAMP_UPDATE_ON_QUIZ_FROM_QUESTION() RETURNS TRIGGER LANGUAGE PLPGSQL AS $$
+CREATE OR REPLACE FUNCTION trigger_set_revision_update()
+RETURNS TRIGGER 
+language plpgsql
+AS $$
+BEGIN
+  NEW.revision = NEW.revision + 1;
+  RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION trigger_timestamp_rev_update_on_quiz_from_question() RETURNS TRIGGER LANGUAGE PLPGSQL AS $$
 DECLARE
-  _quiz_status VARCHAR(20);
+  _quiz_status 		VARCHAR(20);
+  _quiz_revision 	INT;
 BEGIN
 
 	IF TG_OP = 'DELETE' THEN
-		SELECT status
-		INTO _quiz_status
+		SELECT status, revision
+		INTO _quiz_status, _quiz_revision
 		FROM public.quiz
 		WHERE id = OLD.quiz_id;
 
 		UPDATE public.quiz
-		SET last_updated = NOW()
+		SET last_updated = NOW(), 
+			revision =  _quiz_revision + 1
 		WHERE id = OLD.quiz_id;
 	ELSE
-		SELECT status
-		INTO _quiz_status
+		SELECT status, revision
+		INTO _quiz_status, _quiz_revision
 		FROM public.quiz
 		WHERE id = NEW.quiz_id;
 
 		UPDATE public.quiz
-		SET last_updated = NOW()
+		SET last_updated = NOW(), 
+			revision =  _quiz_revision + 1
 		WHERE id = NEW.quiz_id;
 	END IF;
 
@@ -129,12 +143,17 @@ BEFORE UPDATE ON public.quiz
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp_update();
 
-CREATE TRIGGER set_timestamp_update_on_quiz_from_question
+CREATE TRIGGER set_timestamp_rev_update_on_quiz_from_question
 BEFORE UPDATE OR INSERT OR DELETE ON public.quiz_question
 FOR EACH ROW
-EXECUTE PROCEDURE TRIGGER_TIMESTAMP_UPDATE_ON_QUIZ_FROM_QUESTION();
+EXECUTE PROCEDURE trigger_timestamp_rev_update_on_quiz_from_question();
 
 CREATE TRIGGER set_timestamp_update
 BEFORE UPDATE ON public.quiz_question
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp_update();
+
+CREATE TRIGGER set_revision_update
+BEFORE UPDATE ON public.quiz_question
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_revision_update();
