@@ -75,8 +75,6 @@ ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("quiz_id") REFERENCES "quiz" ("id");
 
 ALTER TABLE "quiz" ADD FOREIGN KEY ("created_by_user") REFERENCES "quiz_user" ("email");
 
-ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("quiz_taker") REFERENCES "quiz_user" ("email");
-
 --INDEXES
 CREATE UNIQUE INDEX IDX_QUIZ_CREATED_BY_USER_NAME ON public.quiz (created_by_user, name);
 

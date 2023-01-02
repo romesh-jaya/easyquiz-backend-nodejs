@@ -32,10 +32,23 @@ const inviteQuizTaker = async (req: VercelRequest, res: VercelResponse) => {
   try {
     const client = await postgresClient.connect();
 
-    const queryText =
+    let queryText =
       'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
     const quizData = await client.query(queryText, [quizId, email]);
     const quizDataObject = quizData?.rows[0];
+
+    queryText =
+      'SELECT * FROM public.quiz_attempt WHERE quiz_id = $1 AND quiz_revision = $2 AND quiz_taker = $3';
+    const quizAttemptData = await client.query(queryText, [
+      quizId,
+      quizDataObject.revision,
+      quizTaker,
+    ]);
+
+    if (quizAttemptData.rows[0]) {
+      console.log('Quiz attempt already exists for: ', quizTaker);
+      return res.status(200).send({ error: '' });
+    }
 
     try {
       if (quizDataObject) {
