@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../../../common/interfaces/IPostgresError';
 import postgresClient from '../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
+import { getQuestionsForQuizInOrder } from '../../../common/utils/questions';
 import { createUpdateQuiz } from '../../../common/utils/quiz';
 
 const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
@@ -21,23 +22,11 @@ const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
     const quizDataObject = quizData?.rows[0];
 
     if (quizDataObject) {
-      const queryText = 'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
-      const questionData = await postgresClient.query(queryText, [quizId]);
-
-      // Sort the order of questions using the quizDataObject.question_order as reference
-      const questionsInOrder: any[] = [];
-      if (quizDataObject.question_order && questionData?.rows) {
-        quizDataObject.question_order.forEach((questionId: string) => {
-          const questionFound = questionData.rows.find(
-            (dataOne: any) => dataOne.id === questionId
-          );
-          if (questionFound) {
-            questionsInOrder.push(questionFound);
-          }
-        });
-      }
-
-      quizDataObject.questions = questionsInOrder;
+      quizDataObject.questions = await getQuestionsForQuizInOrder(
+        postgresClient,
+        quizId as string,
+        quizDataObject.question_order
+      );
       return res.status(200).send(quizDataObject);
     }
   } catch (err) {
