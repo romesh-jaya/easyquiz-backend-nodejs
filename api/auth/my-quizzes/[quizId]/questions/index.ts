@@ -1,10 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createUpdateDeleteQuestion } from '../../../../../common/utils/question';
 
-export interface ISignupError {
-  error: string;
-  isGeneralError?: boolean;
-}
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') {

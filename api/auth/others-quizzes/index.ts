@@ -2,11 +2,11 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../../../common/interfaces/IPostgresError';
 import postgresClient from '../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
-import { createUpdateQuiz } from '../../../common/utils/quiz';
 
-
-
-const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
+const getOthersQuizzesWithoutCorrectAnswersForUser = async (
+  req: VercelRequest,
+  res: VercelResponse
+) => {
   const userInfo = await getUserEmailFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
@@ -34,14 +34,10 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  if (req.method === 'POST') {
-    return createUpdateQuiz(req, res);
-  }
-
   if (req.method === 'GET') {
-    return getQuizzesForUser(req, res);
+    return getOthersQuizzesWithoutCorrectAnswersForUser(req, res);
   }
 
-  res.setHeader('Allow', ['POST', 'GET']);
+  res.setHeader('Allow', ['GET']);
   return res.status(405).end('Method Not Allowed');
 }

@@ -4,11 +4,6 @@ import { IFirebaseAuthError } from '../../../common/interfaces/IFirebaseAuthErro
 import { IPostgresError } from '../../../common/interfaces/IPostgresError';
 import postgresClient from '../../../common/postgres';
 
-export interface ISignupError {
-  error: string;
-  isGeneralError?: boolean;
-}
-
 export default async function (req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
