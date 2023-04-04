@@ -1,7 +1,7 @@
 import admin from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 
-import serviceAccount from '../keys/easyquiz-auth-firebase-adminsdk.json';
+import serviceAccount from '../../keys/easyquiz-auth-firebase-adminsdk.json';
 
 const params = {
   type: serviceAccount.type,
