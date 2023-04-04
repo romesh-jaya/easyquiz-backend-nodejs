@@ -1,10 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { auth } from '../../../common/firebase';
-import { IFirebaseAuthError } from '../../../common/interfaces/IFirebaseAuthError';
-import { IPostgresError } from '../../../common/interfaces/IPostgresError';
-import postgresClient from '../../../common/postgres';
+import { auth } from '../../../../common/firebase';
+import { IFirebaseAuthError } from '../../../../common/interfaces/IFirebaseAuthError';
+import { IPostgresError } from '../../../../common/interfaces/IPostgresError';
+import { runCorsMiddleware } from '../../../../common/middleware/cors';
+import postgresClient from '../../../../common/postgres';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
+  await runCorsMiddleware(req, res);
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { IPostgresError } from '../../../common/interfaces/IPostgresError';
-import postgresClient from '../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
+import { IPostgresError } from '../../../../common/interfaces/IPostgresError';
+import { runCorsMiddleware } from '../../../../common/middleware/cors';
+import postgresClient from '../../../../common/postgres';
+import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
 
 const getOthersQuizzesWithoutCorrectAnswersForUser = async (
   req: VercelRequest,
@@ -30,6 +31,7 @@ const getOthersQuizzesWithoutCorrectAnswersForUser = async (
 };
 
 export default async function (req: VercelRequest, res: VercelResponse) {
+  await runCorsMiddleware(req, res);
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

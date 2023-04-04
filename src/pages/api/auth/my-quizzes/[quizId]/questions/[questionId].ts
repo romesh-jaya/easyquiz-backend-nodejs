@@ -1,7 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createUpdateDeleteQuestion } from '../../../../../common/utils/question';
+import { runCorsMiddleware } from '../../../../../../common/middleware/cors';
+import { createUpdateDeleteQuestion } from '../../../../../../common/utils/question';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
+  await runCorsMiddleware(req, res);
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

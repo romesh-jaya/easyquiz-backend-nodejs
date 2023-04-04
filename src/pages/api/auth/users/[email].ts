@@ -1,9 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import postgresClient from '../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
+import { runCorsMiddleware } from '../../../../common/middleware/cors';
+import postgresClient from '../../../../common/postgres';
+import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   let data;
+
+  await runCorsMiddleware(req, res);
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

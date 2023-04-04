@@ -27,3 +27,7 @@ Starts the app.
 ## Deployment
 
 `npm run deploy`
+
+## Note
+
+April 2023, had to switch from Vercel Backend Functions to NextJS Backend Functions, as the deployed version on the cloud wasn't working correctly. Make sure framework preset is set to NextJS.

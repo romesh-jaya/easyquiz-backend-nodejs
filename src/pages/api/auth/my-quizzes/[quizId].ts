@@ -1,9 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { IPostgresError } from '../../../common/interfaces/IPostgresError';
-import postgresClient from '../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../common/utils/auth';
-import { getQuestionsForQuizInOrder } from '../../../common/utils/questions';
-import { createUpdateQuiz } from '../../../common/utils/quiz';
+import { IPostgresError } from '../../../../common/interfaces/IPostgresError';
+import { runCorsMiddleware } from '../../../../common/middleware/cors';
+import postgresClient from '../../../../common/postgres';
+import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
+import { getQuestionsForQuizInOrder } from '../../../../common/utils/questions';
+import { createUpdateQuiz } from '../../../../common/utils/quiz';
 
 const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;
@@ -39,6 +40,7 @@ const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
 };
 
 export default async function (req: VercelRequest, res: VercelResponse) {
+  await runCorsMiddleware(req, res);
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

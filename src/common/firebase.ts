@@ -16,9 +16,11 @@ const params = {
   clientC509CertUrl: serviceAccount.client_x509_cert_url,
 };
 
-admin.initializeApp({
-  credential: admin.credential.cert(params),
-});
+!admin.apps.length
+  ? admin.initializeApp({
+      credential: admin.credential.cert(params),
+    })
+  : admin.app();
 
 //initialize firebase auth
 const auth = getAuth();
