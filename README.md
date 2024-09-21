@@ -29,7 +29,7 @@ Starts the app.
 
 `npm run deploy`
 
-- need to use Vercel CLI to deploy as there are firebase keys to go with the deployment
+- need to use Vercel CLI to deploy as there are firebase keys to go with the deployment. Remember to promote a particular build into production once verified.
 
 ## Note
 
