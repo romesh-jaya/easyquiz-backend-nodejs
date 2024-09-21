@@ -2,14 +2,14 @@ const { Pool } = require('pg');
 const types = require('pg').types;
 const parseTimestampTz = require('postgres-date');
 
-// Create a connection pool using the connection information provided on bit.io.
+// Create a connection pool using the connection information provided.
 const postgresClient = new Pool({
   user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_HOST,
   database: process.env.POSTGRES_DATABASE,
   password: process.env.POSTGRES_PASSWORD,
-  port: 5432,
-  ssl: true,
+  port: process.env.POSTGRES_PORT,
+  rejectUnauthorized: false
 });
 
 // taken from https://github.com/brianc/node-pg-types/blob/master/lib/textParsers.js

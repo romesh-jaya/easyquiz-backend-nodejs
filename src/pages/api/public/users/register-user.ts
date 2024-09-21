@@ -59,7 +59,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
       await client.query('ROLLBACK');
       throw e;
     } finally {
-      client.release();
+      client.end();
     }
   } catch (err) {
     const error = err as IPostgresError;

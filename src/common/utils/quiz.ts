@@ -99,7 +99,7 @@ export const createUpdateQuiz = async (
       await client.query('ROLLBACK');
       throw e;
     } finally {
-      client.release();
+      client.end();
     }
   } catch (err) {
     const error = err as IPostgresError;

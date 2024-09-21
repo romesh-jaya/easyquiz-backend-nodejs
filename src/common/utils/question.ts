@@ -39,8 +39,8 @@ export const createUpdateDeleteQuestion = async (
   const actionType = isDelete
     ? CRUDActionType.Delete
     : questionId
-    ? CRUDActionType.Update
-    : CRUDActionType.Insert;
+      ? CRUDActionType.Update
+      : CRUDActionType.Insert;
 
   if (req.body) {
     questionContent = req.body.questionContent;
@@ -120,7 +120,7 @@ export const createUpdateDeleteQuestion = async (
       await client.query('ROLLBACK');
       throw e;
     } finally {
-      client.release();
+      client.end();
     }
   } catch (err) {
     const error = err as IPostgresError;

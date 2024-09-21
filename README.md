@@ -1,6 +1,6 @@
 # EasyQuiz Backend - NodeJS Serverless
 
-These are NodeJS serverless functions used to interface the Postgres DB and Authentication for EasyQuiz app.
+These are NodeJS serverless functions hosted on NextJS SDK, used to interface the Postgres DB and Authentication for EasyQuiz app.
 
 ## Technical details
 
@@ -8,7 +8,8 @@ These are NodeJS serverless functions used to interface the Postgres DB and Auth
 
 ## API Paths
 
-- /api/public - handles all unauthenticated requests
+- /api - checks if server is up.
+- /api/public - handles all unauthenticated requests.
 - /api/auth - handles all authenticated requests
 
 ## .env variables
@@ -20,13 +21,15 @@ Firebase service key must be placed in the /keys directory for project to run su
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm run dev`
 
 Starts the app.
 
 ## Deployment
 
 `npm run deploy`
+
+- need to use Vercel CLI to deploy as there are firebase keys to go with the deployment
 
 ## Note
 

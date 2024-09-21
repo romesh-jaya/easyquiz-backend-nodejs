@@ -56,7 +56,7 @@ const updateQuizStatus = async (req: VercelRequest, res: VercelResponse) => {
         await client.query('ROLLBACK');
         throw e;
       } finally {
-        client.release();
+        client.end();
       }
     } else {
       return res
