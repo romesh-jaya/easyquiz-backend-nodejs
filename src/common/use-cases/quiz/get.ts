@@ -5,6 +5,6 @@ export default class GetQuiz {
   constructor(protected quizDAO: IQuizDAO) {}
 
   async call(id: string): Promise<Quiz> {
-    return await this.quizDAO.get(id);
+    return this.quizDAO.get(id);
   }
 }

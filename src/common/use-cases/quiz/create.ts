@@ -1,6 +1,5 @@
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IResponse } from '../../interfaces/IResponse';
-import { MESSAGE_SUCCESS } from '../../constants/messages';
 import { Quiz } from '../../types/Quiz';
 
 export default class CreateQuiz {
@@ -13,9 +12,6 @@ export default class CreateQuiz {
       );
     }
 
-    return {
-      message: MESSAGE_SUCCESS,
-      data: await this.quizDAO.create(payload),
-    };
+    return this.quizDAO.create(payload);
   }
 }

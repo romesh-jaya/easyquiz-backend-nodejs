@@ -1,6 +1,5 @@
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IResponse } from '../../interfaces/IResponse';
-import { MESSAGE_SUCCESS } from '../../constants/messages';
 import { QuizStatus } from '../../enums/QuizStatus';
 
 export default class UpdateQuizStatus {
@@ -35,9 +34,6 @@ export default class UpdateQuizStatus {
       );
     }
 
-    return {
-      message: MESSAGE_SUCCESS,
-      data: await this.quizDAO.updateQuizStatus(quizId, quizStatus),
-    };
+    return this.quizDAO.updateQuizStatus(quizId, quizStatus);
   }
 }

@@ -10,6 +10,6 @@ export interface IQuizDAO {
     questionOrder: string[]
   ): Promise<IResponse>;
   inviteQuizTaker(quizId: string, quizTaker: string): Promise<IResponse>;
-  getQuizzesForUser(): Promise<IResponse>;
-  getQuizWithDetails(quizId: string): Promise<IResponse>;
+  getQuizzesForUser(): Promise<Quiz[]>;
+  getQuizWithDetails(quizId: string): Promise<Quiz>;
 }
