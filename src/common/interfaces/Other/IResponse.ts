@@ -1,4 +1,6 @@
 export interface IResponse {
-  message: string;
-  data: any;
+  message?: string;
+  error?: string;
+  isGeneralError?: boolean;
+  data?: any;
 }
