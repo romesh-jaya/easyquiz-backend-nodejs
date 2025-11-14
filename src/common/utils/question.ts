@@ -15,7 +15,7 @@ const checkUserAccess = async (
   if (actionType !== CRUDActionType.Insert) {
     // Check for user access to the question
     const queryText =
-      'SELECT 1 FROM public.quiz_question question, public.quiz quiz WHERE question.quiz_id = quiz.id AND question.id = $1 AND quiz.created_by_user = $2';
+      'SELECT 1 FROM public.quiz_question question, public.quiz quiz WHERE question.quizId = quiz.id AND question.id = $1 AND quiz.created_by_user = $2';
     const quizData = await postgresClient.query(queryText, [questionId, email]);
     const quizDataObject = quizData?.rows[0];
     return !!quizDataObject;
@@ -99,7 +99,7 @@ export const createUpdateDeleteQuestion = async (
       } else {
         const uuid = uuidv4();
         const queryText =
-          'INSERT INTO public.quiz_question(id, quiz_id, question_content, answers)  VALUES ($1, $2, $3, $4)';
+          'INSERT INTO public.quiz_question(id, quizId, question_content, answers)  VALUES ($1, $2, $3, $4)';
         await client.query(queryText, [uuid, quizId, questionContent, answers]);
         console.log('Question saved: ', uuid);
 

@@ -3,7 +3,7 @@ export const getQuestionsForQuizInOrder = async (
   quizId: string,
   questionOrder: string[]
 ) => {
-  const queryText = 'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
+  const queryText = 'SELECT * FROM public.quiz_question WHERE quizId = $1';
   const questionData = await client.query(queryText, [quizId]);
 
   // Sort the order of questions using the quizDataObject.question_order as reference

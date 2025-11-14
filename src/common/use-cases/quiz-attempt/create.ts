@@ -23,7 +23,7 @@ export default class CreateQuizAttempt {
     const questionsWithAnswers = await getQuestionsForQuizInOrder(
       postgresClient,
       quiz.id,
-      quiz.question_order
+      quiz.questionOrder
     );
 
     questionsWithAnswers.forEach((questionWithAnswer) => {

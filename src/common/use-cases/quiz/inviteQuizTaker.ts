@@ -2,7 +2,7 @@ import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IResponse } from '../../interfaces/Other/IResponse';
 
-export default class inviteQuizTaker {
+export default class InviteQuizTaker {
   constructor(
     protected quizDAO: IQuizDAO,
     protected quizAttemptDAO: IQuizAttemptDAO
