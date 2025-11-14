@@ -12,6 +12,46 @@ export default class QuizPostgresDAO implements IQuizDAO {
     this.logger = new Logger();
   }
 
+  async update(data: Partial<Quiz>, userId: string): Promise<IResponse> {
+    try {
+      const client = await postgresClient.connect();
+      try {
+        await client.query('BEGIN');
+        const queryText =
+          'UPDATE public.quiz SET name = $1, description = $2, pass_mark_percentage = $3 WHERE id = $5 AND created_by_user = $6';
+        const result = await client.query(queryText, [
+          data.name,
+          data.description,
+          data.passMarkPercentage,
+          data.id,
+          userId,
+        ]);
+
+        if (result.rowCount === 0) {
+          return {
+            error: 'Quiz not found or you do not have permission to update it.',
+            isGeneralError: true,
+          };
+        }
+
+        await client.query('COMMIT');
+        return { message: MESSAGE_SUCCESS };
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.end();
+      }
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error while updating quiz: ' + error.stack);
+      return {
+        error: 'Unknown error occurred while updating quiz',
+        isGeneralError: false,
+      };
+    }
+  }
+
   async create(data: Partial<Quiz>, userId: string): Promise<IResponse> {
     try {
       const client = await postgresClient.connect();

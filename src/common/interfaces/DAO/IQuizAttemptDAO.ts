@@ -3,14 +3,7 @@ import { QuizAttempt } from '../../types/QuizAttempt';
 import { IResponse } from '../Other/IResponse';
 
 export interface IQuizAttemptDAO {
-  create(
-    quizId: string,
-    quizTaker: string,
-    questions: string,
-    answers: string,
-    noOfQuestions: number,
-    userId: string
-  ): Promise<IResponse>;
+  create(data: Partial<QuizAttempt>, userId: string): Promise<IResponse>;
   get(id: string, userId: string): Promise<QuizAttempt>;
   getByIdRevisionQuizTaker(
     id: string,

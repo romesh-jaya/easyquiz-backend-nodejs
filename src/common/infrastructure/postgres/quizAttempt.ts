@@ -1,26 +1,26 @@
+import { MESSAGE_SUCCESS } from '../../constants/messages';
 import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
 import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { QuizAttempt } from '../../types/QuizAttempt';
+import { Logger } from '../logger/logger';
 import QuizPostgresDAO from './quiz';
 
 export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
-  async create(
-    quizId: string,
-    quizTaker: string,
-    questions: string,
-    answers: string,
-    noOfQuestions: number,
-    userId: string
-  ): Promise<IResponse> {
+  logger: Logger;
+  constructor() {
+    this.logger = new Logger();
+  }
+
+  async create(data: Partial<QuizAttempt>, userId: string): Promise<IResponse> {
     try {
       const quizDAO = new QuizPostgresDAO();
-      const quiz = await quizDAO.get(quizId, userId);
+      const quiz = await quizDAO.get(data.quizId as string, userId);
 
       if (!quiz) {
         return {
-          error: `Quiz with ID ${quizId} not found for user ${userId}`,
+          error: `Quiz with ID ${data.quizId} not found for user ${userId}`,
           isGeneralError: true,
         };
       }
@@ -29,18 +29,18 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
       try {
         await client.query('BEGIN');
         const queryText =
-          'INSERT INTO public.quiz_attempt(quiz_id, quiz_revision, quiz_taker, questions, answers, no_of_questions, pass_percentage) VALUES($1, $2, $3, $4, $5, $6, $7)';
+          'INSERT INTO public.quiz_attempt(quiz_id, quiz_revision, quiz_taker, questions, answers, no_of_questions, pass_percentage) VALUES ($1, $2, $3, $4, $5, $6, $7)';
         await client.query(queryText, [
-          quiz.id,
-          quiz.revision,
-          quizTaker,
-          questions,
-          answers,
-          noOfQuestions,
-          quiz.passMarkPercentage,
+          data.quizId,
+          data.quizRevision,
+          data.quizTaker,
+          data.questions,
+          data.answers,
+          data.noOfQuestions,
+          data.passPercentage,
         ]);
         await client.query('COMMIT');
-        return { message: 'Quiz attempt created successfully' };
+        return { message: MESSAGE_SUCCESS };
       } catch (err) {
         await client.query('ROLLBACK');
         throw err;
@@ -49,7 +49,7 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
       }
     } catch (err) {
       const error = err as IPostgresError;
-      console.error('Error while creating quiz attempt: ', error.stack);
+      this.logger.error('Error while creating quiz attempt: ' + error.stack);
       return {
         error: 'Unknown error occurred while creating quiz attempt',
         isGeneralError: false,

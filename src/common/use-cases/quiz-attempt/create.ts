@@ -4,6 +4,7 @@ import { IQuestionWithoutCorrectAnswers } from '../../interfaces/Other/IQuestion
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { Quiz } from '../../types/Quiz';
+import { QuizAttempt } from '../../types/QuizAttempt';
 import { getQuestionsForQuizInOrder } from '../../utils/questions';
 
 export default class CreateQuizAttempt {
@@ -39,13 +40,14 @@ export default class CreateQuizAttempt {
       );
     });
 
-    return this.quizAttemptDAO.create(
-      quiz.id,
-      quizTaker,
-      JSON.stringify(questionsWithoutCorrectAnswers),
-      JSON.stringify(correctAnswerIndexes),
-      questionsWithAnswers.length,
-      userId
-    );
+    let quizAttempt: Partial<QuizAttempt> = {
+      quizId: quiz.id,
+      quizTaker: quizTaker,
+      questions: JSON.stringify(questionsWithoutCorrectAnswers),
+      answers: JSON.stringify(correctAnswerIndexes),
+      noOfQuestions: questionsWithAnswers.length,
+    };
+
+    return this.quizAttemptDAO.create(quizAttempt, userId);
   }
 }
