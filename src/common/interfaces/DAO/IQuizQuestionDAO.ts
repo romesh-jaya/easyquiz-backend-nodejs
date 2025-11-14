@@ -1,0 +1,8 @@
+import { QuizQuestion } from '../../types/QuizQuestion';
+import { IResponse } from '../Other/IResponse';
+
+export interface IQuizQuestionDAO {
+  create(data: Partial<QuizQuestion>, userId: string): Promise<IResponse>;
+  get(id: string, userId: string): Promise<QuizQuestion>;
+  update(data: Partial<QuizQuestion>, userId: string): Promise<IResponse>;
+}
