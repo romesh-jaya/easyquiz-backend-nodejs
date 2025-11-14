@@ -1,6 +1,7 @@
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import { Quiz } from '../../types/Quiz';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class CreateQuiz {
   constructor(protected quizDAO: IQuizDAO) {}
@@ -12,6 +13,8 @@ export default class CreateQuiz {
       );
     }
 
+    const uuid = uuidv4();
+    payload.id = uuid;
     return this.quizDAO.create(payload, userId);
   }
 }

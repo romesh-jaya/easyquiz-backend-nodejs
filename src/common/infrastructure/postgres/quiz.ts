@@ -5,7 +5,6 @@ import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { Quiz } from '../../types/Quiz';
 import { Logger } from '../logger/logger';
-import { v4 as uuidv4 } from 'uuid';
 
 export default class QuizPostgresDAO implements IQuizDAO {
   logger: Logger;
@@ -15,7 +14,6 @@ export default class QuizPostgresDAO implements IQuizDAO {
 
   async create(data: Partial<Quiz>, userId: string): Promise<IResponse> {
     try {
-      const uuid = uuidv4();
       const client = await postgresClient.connect();
       try {
         await client.query('BEGIN');
@@ -23,7 +21,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         const queryText =
           'INSERT INTO public.quiz(id, created_by_user, name, description, pass_mark_percentage, can_retake_quiz)  VALUES ($1, $2, $3, $4, $5, $6)';
         await client.query(queryText, [
-          uuid,
+          data.id,
           userId,
           data.name,
           data.description,
@@ -33,7 +31,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         await client.query('COMMIT');
         return {
           message: MESSAGE_SUCCESS,
-          data: { id: uuid },
+          data: { id: data.id },
         };
       } catch (err) {
         await client.query('ROLLBACK');
