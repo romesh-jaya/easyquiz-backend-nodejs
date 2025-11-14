@@ -2,12 +2,12 @@ import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
 import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
-import { Quiz } from '../../types/Quiz';
 import { QuizAttempt } from '../../types/QuizAttempt';
+import QuizPostgresDAO from './quiz';
 
 export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
   async create(
-    quiz: Quiz,
+    quizId: string,
     quizTaker: string,
     questions: string,
     answers: string,
@@ -15,6 +15,16 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
     userId: string
   ): Promise<IResponse> {
     try {
+      const quizDAO = new QuizPostgresDAO();
+      const quiz = await quizDAO.get(quizId, userId);
+
+      if (!quiz) {
+        return {
+          error: `Quiz with ID ${quizId} not found for user ${userId}`,
+          isGeneralError: true,
+        };
+      }
+
       const client = await postgresClient.connect();
       try {
         await client.query('BEGIN');

@@ -40,7 +40,7 @@ export default class CreateQuizAttempt {
     });
 
     return this.quizAttemptDAO.create(
-      quiz,
+      quiz.id,
       quizTaker,
       JSON.stringify(questionsWithoutCorrectAnswers),
       JSON.stringify(correctAnswerIndexes),

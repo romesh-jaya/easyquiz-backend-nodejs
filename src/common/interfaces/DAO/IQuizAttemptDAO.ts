@@ -4,7 +4,7 @@ import { IResponse } from '../Other/IResponse';
 
 export interface IQuizAttemptDAO {
   create(
-    quiz: Quiz,
+    quizId: string,
     quizTaker: string,
     questions: string,
     answers: string,
