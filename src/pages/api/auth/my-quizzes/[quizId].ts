@@ -1,10 +1,28 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { IPostgresError } from '../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
-import postgresClient from '../../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
-import { getQuestionsForQuizInOrder } from '../../../../common/utils/questions';
 import { createUpdateQuiz } from '../../../../common/utils/quiz';
+import QuizPostgresDAO from '../../../../common/infrastructure/postgres/quiz';
+import QuizController from '../../../../common/controllers/quiz';
+import CreateQuiz from '../../../../common/use-cases/quiz/create';
+import GetQuiz from '../../../../common/use-cases/quiz/get';
+import UpdateQuiz from '../../../../common/use-cases/quiz/update';
+import InviteQuizTaker from '../../../../common/use-cases/quiz/inviteQuizTaker';
+import UpdateQuestionOrder from '../../../../common/use-cases/quiz/updateQuestionOrder';
+import UpdateQuizStatus from '../../../../common/use-cases/quiz/updateQuizStatus';
+import QuizAttemptPostgresDAO from '../../../../common/infrastructure/postgres/quizAttempt';
+
+let quizDAO = new QuizPostgresDAO();
+let quizAttemptDAO = new QuizAttemptPostgresDAO();
+
+let controller = new QuizController(
+  new CreateQuiz(quizDAO),
+  new GetQuiz(quizDAO),
+  new UpdateQuiz(quizDAO),
+  new InviteQuizTaker(quizDAO, quizAttemptDAO),
+  new UpdateQuestionOrder(quizDAO),
+  new UpdateQuizStatus(quizDAO)
+);
 
 const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;
@@ -13,30 +31,11 @@ const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
     return res.status(400).send(userInfo.error);
   }
 
-  // At this point, we definitely know the user's email
-  const email = userInfo.email ?? '';
-
-  try {
-    const queryText =
-      'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
-    const quizData = await postgresClient.query(queryText, [quizId, email]);
-    const quizDataObject = quizData?.rows[0];
-
-    if (quizDataObject) {
-      quizDataObject.questions = await getQuestionsForQuizInOrder(
-        postgresClient,
-        quizId as string,
-        quizDataObject.question_order
-      );
-      return res.status(200).send(quizDataObject);
-    }
-  } catch (err) {
-    const error = err as IPostgresError;
-    console.error('Error querying quiz table in DB: ', error.stack);
-    return res.status(500).send({
-      message: 'Error querying quiz table in DB',
-    });
-  }
+  let quizWithDetails = await controller.getQuizWithDetails(
+    quizId as string,
+    userInfo.email as string
+  );
+  return res.status(200).send(quizWithDetails);
 };
 
 export default async function (req: VercelRequest, res: VercelResponse) {
