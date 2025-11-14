@@ -1,7 +1,7 @@
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IResponse } from '../../interfaces/Other/IResponse';
 
-export default class updateQuestionOrder {
+export default class UpdateQuestionOrder {
   constructor(protected quizDAO: IQuizDAO) {}
 
   async call(
