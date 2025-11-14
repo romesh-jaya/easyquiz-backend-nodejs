@@ -4,6 +4,28 @@ import { runCorsMiddleware } from '../../../../common/middleware/cors';
 import postgresClient from '../../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
 import { createUpdateQuiz } from '../../../../common/utils/quiz';
+import QuizController from '../../../../common/controllers/quiz';
+import QuizPostgresDAO from '../../../../common/infrastructure/postgres/quiz';
+import QuizAttemptPostgresDAO from '../../../../common/infrastructure/postgres/quizAttempt';
+import CreateQuiz from '../../../../common/use-cases/quiz/create';
+import GetQuiz from '../../../../common/use-cases/quiz/get';
+import InviteQuizTaker from '../../../../common/use-cases/quiz/inviteQuizTaker';
+import UpdateQuiz from '../../../../common/use-cases/quiz/update';
+import UpdateQuestionOrder from '../../../../common/use-cases/quiz/updateQuestionOrder';
+import UpdateQuizStatus from '../../../../common/use-cases/quiz/updateQuizStatus';
+import { Quiz } from '../../../../common/types/Quiz';
+
+let quizDAO = new QuizPostgresDAO();
+let quizAttemptDAO = new QuizAttemptPostgresDAO();
+
+let controller = new QuizController(
+  new CreateQuiz(quizDAO),
+  new GetQuiz(quizDAO),
+  new UpdateQuiz(quizDAO),
+  new InviteQuizTaker(quizDAO, quizAttemptDAO),
+  new UpdateQuestionOrder(quizDAO),
+  new UpdateQuizStatus(quizDAO)
+);
 
 const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
   const userInfo = await getUserEmailFromAuthToken(req);
@@ -28,6 +50,24 @@ const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
   }
 };
 
+const createQuiz = async (req: VercelRequest, res: VercelResponse) => {
+  const { quizName, description, passMarkPercentage } = req.body;
+
+  const userInfo = await getUserEmailFromAuthToken(req);
+  if (userInfo.error) {
+    return res.status(400).send(userInfo.error);
+  }
+
+  let quiz: Partial<Quiz> = {
+    name: quizName,
+    description,
+    passMarkPercentage,
+  };
+
+  let response = await controller.create(quiz, userInfo.email as string);
+  return res.status(200).send(response);
+};
+
 export default async function (req: VercelRequest, res: VercelResponse) {
   await runCorsMiddleware(req, res);
   if (req.method === 'OPTIONS') {
@@ -35,7 +75,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === 'POST') {
-    return createUpdateQuiz(req, res);
+    return createQuiz(req, res);
   }
 
   if (req.method === 'GET') {

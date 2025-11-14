@@ -11,6 +11,7 @@ import InviteQuizTaker from '../../../../common/use-cases/quiz/inviteQuizTaker';
 import UpdateQuestionOrder from '../../../../common/use-cases/quiz/updateQuestionOrder';
 import UpdateQuizStatus from '../../../../common/use-cases/quiz/updateQuizStatus';
 import QuizAttemptPostgresDAO from '../../../../common/infrastructure/postgres/quizAttempt';
+import { Quiz } from '../../../../common/types/Quiz';
 
 let quizDAO = new QuizPostgresDAO();
 let quizAttemptDAO = new QuizAttemptPostgresDAO();
