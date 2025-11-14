@@ -60,8 +60,9 @@ CREATE TABLE "quiz_attempt" (
   PRIMARY KEY ("quiz_revision", "quiz_id", "quiz_taker")
 );
 
-CREATE TABLE "quiz_user" (
-  "email" varchar(32) PRIMARY KEY NOT NULL,
+CREATE TABLE "quiz_user" (	
+  "id" uuid PRIMARY KEY NOT NULL,
+  "email" varchar(32) NOT NULL,
   "first_name" varchar(64) NOT NULL,
   "last_name" varchar(64) NOT NULL,
   "photo_url" varchar,
@@ -73,10 +74,12 @@ ALTER TABLE "quiz_question" ADD FOREIGN KEY ("quiz_id") REFERENCES "quiz" ("id")
 
 ALTER TABLE "quiz_attempt" ADD FOREIGN KEY ("quiz_id") REFERENCES "quiz" ("id");
 
-ALTER TABLE "quiz" ADD FOREIGN KEY ("created_by_user") REFERENCES "quiz_user" ("email");
+ALTER TABLE "quiz" ADD FOREIGN KEY ("created_by_user") REFERENCES "quiz_user" ("id");
 
 --INDEXES
 CREATE UNIQUE INDEX IDX_QUIZ_CREATED_BY_USER_NAME ON public.quiz (created_by_user, name);
+
+CREATE UNIQUE INDEX IDX_USER_EMAIL ON public.quiz_user (email);
 
 CREATE INDEX IDX_QUIZ_LAST_UPDATED ON public.quiz (last_updated);
 
