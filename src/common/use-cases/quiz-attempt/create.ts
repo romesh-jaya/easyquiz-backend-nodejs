@@ -9,7 +9,11 @@ import { getQuestionsForQuizInOrder } from '../../utils/questions';
 export default class CreateQuizAttempt {
   constructor(protected quizAttemptDAO: IQuizAttemptDAO) {}
 
-  async call(quiz: Quiz, quizTaker: string): Promise<IResponse> {
+  async call(
+    quiz: Quiz,
+    quizTaker: string,
+    userId: string
+  ): Promise<IResponse> {
     if (!quizTaker || !quiz) {
       throw new Error('Error: quizTaker or quiz was found to be empty');
     }
@@ -40,7 +44,8 @@ export default class CreateQuizAttempt {
       quizTaker,
       JSON.stringify(questionsWithoutCorrectAnswers),
       JSON.stringify(correctAnswerIndexes),
-      questionsWithAnswers.length
+      questionsWithAnswers.length,
+      userId
     );
   }
 }

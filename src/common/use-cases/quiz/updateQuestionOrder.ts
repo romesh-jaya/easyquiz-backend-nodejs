@@ -4,7 +4,11 @@ import { IResponse } from '../../interfaces/Other/IResponse';
 export default class updateQuestionOrder {
   constructor(protected quizDAO: IQuizDAO) {}
 
-  async call(quizId: string, questionOrder: string[]): Promise<IResponse> {
+  async call(
+    quizId: string,
+    questionOrder: string[],
+    userId: string
+  ): Promise<IResponse> {
     if (!questionOrder) {
       throw new Error('Error: questionOrder was found to be empty');
     }
@@ -13,6 +17,6 @@ export default class updateQuestionOrder {
       throw new Error('Error: questionOrder must be an array');
     }
 
-    return this.quizDAO.updateQuestionOrder(quizId, questionOrder);
+    return this.quizDAO.updateQuestionOrder(quizId, questionOrder, userId);
   }
 }

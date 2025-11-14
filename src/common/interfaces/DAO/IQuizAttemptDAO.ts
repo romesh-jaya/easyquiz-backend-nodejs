@@ -8,12 +8,14 @@ export interface IQuizAttemptDAO {
     quizTaker: string,
     questions: string,
     answers: string,
-    noOfQuestions: number
+    noOfQuestions: number,
+    userId: string
   ): Promise<IResponse>;
-  get(id: string): Promise<QuizAttempt>;
+  get(id: string, userId: string): Promise<QuizAttempt>;
   getByIdRevisionQuizTaker(
     id: string,
     quizRevision: number,
-    quizTaker: string
+    quizTaker: string,
+    userId: string
   ): Promise<QuizAttempt>;
 }

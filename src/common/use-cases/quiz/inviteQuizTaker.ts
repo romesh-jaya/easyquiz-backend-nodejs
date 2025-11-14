@@ -8,12 +8,16 @@ export default class inviteQuizTaker {
     protected quizAttemptDAO: IQuizAttemptDAO
   ) {}
 
-  async call(quizId: string, quizTaker: string): Promise<IResponse> {
+  async call(
+    quizId: string,
+    quizTaker: string,
+    userId: string
+  ): Promise<IResponse> {
     if (!quizTaker) {
       throw new Error('Error: quizTaker was found to be empty');
     }
 
-    const quizDataObject = await this.quizDAO.get(quizId);
+    const quizDataObject = await this.quizDAO.get(quizId, userId);
 
     if (!quizDataObject) {
       throw new Error(`Error: quizId ${quizId} does not exist`);
@@ -23,13 +27,14 @@ export default class inviteQuizTaker {
       await this.quizAttemptDAO.getByIdRevisionQuizTaker(
         quizId,
         quizDataObject.revision,
-        quizTaker
+        quizTaker,
+        userId
       );
 
     if (quizAttemptObject) {
       throw new Error('Error: Quiz attempt already exists for: ' + quizTaker);
     }
 
-    return this.quizDAO.inviteQuizTaker(quizId, quizTaker);
+    return this.quizDAO.inviteQuizTaker(quizId, quizTaker, userId);
   }
 }

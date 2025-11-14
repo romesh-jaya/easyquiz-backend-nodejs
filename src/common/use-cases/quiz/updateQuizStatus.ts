@@ -5,7 +5,11 @@ import { QuizStatus } from '../../enums/QuizStatus';
 export default class UpdateQuizStatus {
   constructor(protected quizDAO: IQuizDAO) {}
 
-  async call(quizId: string, quizStatus: string): Promise<IResponse> {
+  async call(
+    quizId: string,
+    quizStatus: string,
+    userId: string
+  ): Promise<IResponse> {
     const statusValues = Object.values(QuizStatus);
 
     if (!quizStatus) {
@@ -18,7 +22,7 @@ export default class UpdateQuizStatus {
       );
     }
 
-    const quizToUpdate = await this.quizDAO.get(quizId);
+    const quizToUpdate = await this.quizDAO.get(quizId, userId);
 
     if (
       !(
@@ -34,6 +38,6 @@ export default class UpdateQuizStatus {
       );
     }
 
-    return this.quizDAO.updateQuizStatus(quizId, quizStatus);
+    return this.quizDAO.updateQuizStatus(quizId, quizStatus, userId);
   }
 }

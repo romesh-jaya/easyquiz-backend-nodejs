@@ -2,15 +2,23 @@ import { Quiz } from '../../types/Quiz';
 import { IResponse } from '../Other/IResponse';
 
 export interface IQuizDAO {
-  create(data: Partial<Quiz>): Promise<IResponse>;
-  get(id: string): Promise<Quiz>;
-  getQuizWithDetails(id: string): Promise<Quiz>;
-  updateQuizStatus(quizId: string, quizStatus: string): Promise<IResponse>;
+  create(data: Partial<Quiz>, userId: string): Promise<IResponse>;
+  get(id: string, userId: string): Promise<Quiz>;
+  getQuizWithDetails(id: string, userId: string): Promise<Quiz>;
+  updateQuizStatus(
+    quizId: string,
+    quizStatus: string,
+    userId: string
+  ): Promise<IResponse>;
   updateQuestionOrder(
     quizId: string,
-    questionOrder: string[]
+    questionOrder: string[],
+    userId: string
   ): Promise<IResponse>;
-  inviteQuizTaker(quizId: string, quizTaker: string): Promise<IResponse>;
-  getQuizzesForUser(): Promise<Quiz[]>;
-  getQuizWithDetails(quizId: string): Promise<Quiz>;
+  inviteQuizTaker(
+    quizId: string,
+    quizTaker: string,
+    userId: string
+  ): Promise<IResponse>;
+  getQuizzesForUser(userId: string): Promise<Quiz[]>;
 }
