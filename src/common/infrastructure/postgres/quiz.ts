@@ -75,7 +75,26 @@ export default class QuizPostgresDAO implements IQuizDAO {
   }
 
   async getQuizWithDetails(id: string, userId: string): Promise<Quiz> {
-    throw new Error('Method not implemented.');
+    try {
+      const queryText =
+        'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
+      const quizData = await postgresClient.query(queryText, [id, userId]);
+      const quizDataObject = quizData?.rows[0];
+
+      if (quizDataObject) {
+        const questionQuery =
+          'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
+        const questionData = await postgresClient.query(questionQuery, [id]);
+
+        quizDataObject.questions = questionData?.rows;
+        return quizDataObject;
+      }
+      throw new Error('Quiz not found');
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error querying quiz with details: ' + error.stack);
+      throw new Error('Error querying quiz with details');
+    }
   }
 
   async updateQuizStatus(
@@ -83,28 +102,112 @@ export default class QuizPostgresDAO implements IQuizDAO {
     quizStatus: string,
     userId: string
   ): Promise<IResponse> {
-    throw new Error('Method not implemented.');
+    try {
+      const client = await postgresClient.connect();
+      try {
+        await client.query('BEGIN');
+        const queryText =
+          'UPDATE public.quiz SET status = $1 WHERE id = $2 AND created_by_user = $3';
+        await client.query(queryText, [quizStatus, quizId, userId]);
+        await client.query('COMMIT');
+        return { message: MESSAGE_SUCCESS };
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.end();
+      }
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error updating quiz status: ' + error.stack);
+      return {
+        error: 'Unknown error occurred while updating quiz status',
+        isGeneralError: false,
+      };
+    }
   }
+
   async updateQuestionOrder(
     quizId: string,
     questionOrder: string[],
     userId: string
   ): Promise<IResponse> {
-    throw new Error('Method not implemented.');
+    try {
+      const client = await postgresClient.connect();
+      try {
+        await client.query('BEGIN');
+        const queryText =
+          'UPDATE public.quiz SET question_order = $1 WHERE id = $2 AND created_by_user = $3';
+        await client.query(queryText, [questionOrder, quizId, userId]);
+        await client.query('COMMIT');
+        return { message: MESSAGE_SUCCESS };
+      } catch (err) {
+        await client.query('ROLLBACK');
+        throw err;
+      } finally {
+        client.end();
+      }
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error updating question order: ' + error.stack);
+      return {
+        error: 'Unknown error occurred while updating question order',
+        isGeneralError: false,
+      };
+    }
   }
+
   async inviteQuizTaker(
     quizId: string,
     quizTaker: string,
     userId: string
   ): Promise<IResponse> {
-    throw new Error('Method not implemented.');
+    try {
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'INSERT INTO public.quiz_attempt(quiz_id, quiz_taker, quiz_revision) VALUES ($1, $2, (SELECT revision FROM public.quiz WHERE id = $3))';
+        await client.query(queryText, [quizId, quizTaker, quizId]);
+        return { message: MESSAGE_SUCCESS };
+      } catch (err) {
+        throw err;
+      } finally {
+        client.end();
+      }
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error inviting quiz taker: ' + error.stack);
+      return {
+        error: 'Unknown error occurred while inviting quiz taker',
+        isGeneralError: false,
+      };
+    }
   }
+
   async getQuizzesForUser(userId: string): Promise<Quiz[]> {
-    throw new Error('Method not implemented.');
+    try {
+      const queryText =
+        'SELECT * FROM public.quiz WHERE created_by_user = $1 ORDER BY last_updated DESC';
+      const data = await postgresClient.query(queryText, [userId]);
+      return data?.rows;
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error fetching quizzes for user: ' + error.stack);
+      throw new Error('Error fetching quizzes for user');
+    }
   }
+
   async getOthersQuizzesWithoutCorrectAnswersForUser(
     userId: string
   ): Promise<Quiz[]> {
-    throw new Error('Method not implemented.');
+    try {
+      const queryText = 'SELECT * FROM public.quiz WHERE created_by_user = $1';
+      const data = await postgresClient.query(queryText, [userId]);
+      return data?.rows;
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error fetching others quizzes: ' + error.stack);
+      throw new Error('Error fetching others quizzes');
+    }
   }
 }
