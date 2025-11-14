@@ -21,4 +21,5 @@ export interface IQuizDAO {
     userId: string
   ): Promise<IResponse>;
   getQuizzesForUser(userId: string): Promise<Quiz[]>;
+  getOthersQuizzesWithoutCorrectAnswersForUser(userId: string): Promise<Quiz[]>;
 }

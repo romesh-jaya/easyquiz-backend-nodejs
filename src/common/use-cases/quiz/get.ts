@@ -15,4 +15,10 @@ export default class GetQuiz {
   getQuizWithDetails(id: string, userId: string): Promise<Quiz> {
     return this.quizDAO.getQuizWithDetails(id, userId);
   }
+
+  getOthersQuizzesWithoutCorrectAnswersForUser(
+    userId: string
+  ): Promise<Quiz[]> {
+    return this.quizDAO.getOthersQuizzesWithoutCorrectAnswersForUser(userId);
+  }
 }
