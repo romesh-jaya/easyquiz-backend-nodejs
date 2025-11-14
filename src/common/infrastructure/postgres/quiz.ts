@@ -36,16 +36,16 @@ export default class QuizPostgresDAO implements IQuizDAO {
           data: { id: uuid },
         };
       } catch (err) {
+        await client.query('ROLLBACK');
         const e = err as IPostgresError;
         if (e.code && e.code === '23505') {
-          await client.query('ROLLBACK');
           return {
             error: 'Another Quiz already exists with the same name',
             isGeneralError: true,
           };
         }
-        await client.query('ROLLBACK');
-        throw e;
+        this.logger.error('Error during transaction: ' + e.stack);
+        throw new Error('Transaction failed while creating quiz');
       } finally {
         client.end();
       }
@@ -55,7 +55,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         'Error while inserting Quiz record to DB: ' + error.stack
       );
       return {
-        error: 'Unknown error occured while saving Quiz',
+        error: 'Unknown error occurred while saving Quiz',
         isGeneralError: false,
       };
     }
