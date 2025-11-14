@@ -5,13 +5,7 @@ import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import postgresClient from '../../../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../../../common/utils/auth';
 import { getQuestionsForQuizInOrder } from '../../../../../common/utils/questions';
-
-interface IQuestionWithoutCorrectAnswers {
-  questionContent: string;
-  answers: string[];
-  id: string;
-  revision: number;
-}
+import { IQuestionWithoutCorrectAnswers } from '../../../../../common/interfaces/IQuestionWithoutCorrectAnswers';
 
 const inviteQuizTaker = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;

@@ -1,7 +1,19 @@
+import { Quiz } from '../../types/Quiz';
 import { QuizAttempt } from '../../types/QuizAttempt';
 import { IResponse } from '../IResponse';
 
 export interface IQuizAttemptDAO {
-  create(data: Partial<QuizAttempt>): Promise<IResponse>;
+  create(
+    quiz: Quiz,
+    quizTaker: string,
+    questions: string,
+    answers: string,
+    noOfQuestions: number
+  ): Promise<IResponse>;
   get(id: string): Promise<QuizAttempt>;
+  getByIdRevisionQuizTaker(
+    id: string,
+    quizRevision: number,
+    quizTaker: string
+  ): Promise<QuizAttempt>;
 }
