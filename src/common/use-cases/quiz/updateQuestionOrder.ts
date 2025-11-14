@@ -1,5 +1,5 @@
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
-import { IResponse } from '../../interfaces/IResponse';
+import { IResponse } from '../../interfaces/Other/IResponse';
 
 export default class updateQuestionOrder {
   constructor(protected quizDAO: IQuizDAO) {}

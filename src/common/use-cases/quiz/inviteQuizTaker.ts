@@ -1,6 +1,6 @@
 import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
-import { IResponse } from '../../interfaces/IResponse';
+import { IResponse } from '../../interfaces/Other/IResponse';
 
 export default class inviteQuizTaker {
   constructor(

@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { IPostgresError } from '../../../../../common/interfaces/IPostgresError';
+import { IPostgresError } from '../../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import postgresClient from '../../../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../../../common/utils/auth';

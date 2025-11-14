@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { IAnswer } from '../../../../../common/interfaces/IAnswer';
-import { IPostgresError } from '../../../../../common/interfaces/IPostgresError';
+import { IAnswer } from '../../../../../common/interfaces/Other/IAnswer';
+import { IPostgresError } from '../../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import postgresClient from '../../../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../../../common/utils/auth';
 import { getQuestionsForQuizInOrder } from '../../../../../common/utils/questions';
-import { IQuestionWithoutCorrectAnswers } from '../../../../../common/interfaces/IQuestionWithoutCorrectAnswers';
+import { IQuestionWithoutCorrectAnswers } from '../../../../../common/interfaces/Other/IQuestionWithoutCorrectAnswers';
 
 const inviteQuizTaker = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;

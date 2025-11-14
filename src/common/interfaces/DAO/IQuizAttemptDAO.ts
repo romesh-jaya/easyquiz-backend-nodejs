@@ -1,6 +1,6 @@
 import { Quiz } from '../../types/Quiz';
 import { QuizAttempt } from '../../types/QuizAttempt';
-import { IResponse } from '../IResponse';
+import { IResponse } from '../Other/IResponse';
 
 export interface IQuizAttemptDAO {
   create(

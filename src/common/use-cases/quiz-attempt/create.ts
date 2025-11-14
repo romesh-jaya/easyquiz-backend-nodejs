@@ -1,7 +1,7 @@
 import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
-import { IAnswer } from '../../interfaces/IAnswer';
-import { IQuestionWithoutCorrectAnswers } from '../../interfaces/IQuestionWithoutCorrectAnswers';
-import { IResponse } from '../../interfaces/IResponse';
+import { IAnswer } from '../../interfaces/Other/IAnswer';
+import { IQuestionWithoutCorrectAnswers } from '../../interfaces/Other/IQuestionWithoutCorrectAnswers';
+import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { Quiz } from '../../types/Quiz';
 import { getQuestionsForQuizInOrder } from '../../utils/questions';
