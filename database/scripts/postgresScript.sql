@@ -23,7 +23,7 @@ CREATE TYPE "user_status" AS ENUM (
 
 CREATE TABLE "quiz" (
   "id" uuid PRIMARY KEY NOT NULL,
-  "created_by_user" varchar(32) NOT NULL,
+  "created_by_user" uuid NOT NULL,
   "name" varchar(16) NOT NULL,
   "description" varchar(256) NOT NULL,
   "status" quiz_status DEFAULT 'unpublished',
