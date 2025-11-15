@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runCorsMiddleware } from '../../../../../../common/middleware/cors';
-import { createUpdateDeleteQuestion } from '../../../../../../common/utils/question';
 
 import { getUserIDFromAuthToken } from '../../../../../../common/utils/auth';
 import { QuizQuestion } from '../../../../../../common/types/QuizQuestion';
@@ -31,6 +30,21 @@ const updateQuizQuestion = async (req: VercelRequest, res: VercelResponse) => {
   return res.status(200).send(response);
 };
 
+const deleteQuizQuestion = async (req: VercelRequest, res: VercelResponse) => {
+  const { questionId } = req.query;
+
+  const userInfo = await getUserIDFromAuthToken(req);
+  if (userInfo.error) {
+    return res.status(400).send(userInfo.error);
+  }
+
+  let response = await controller.delete(
+    questionId as string,
+    userInfo.userId as string
+  );
+  return res.status(200).send(response);
+};
+
 export default async function (req: VercelRequest, res: VercelResponse) {
   await runCorsMiddleware(req, res);
   if (req.method === 'OPTIONS') {
@@ -42,7 +56,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === 'DELETE') {
-    return createUpdateDeleteQuestion(req, res, true);
+    return deleteQuizQuestion(req, res);
   }
 
   res.setHeader('Allow', ['PUT', 'DELETE']);
