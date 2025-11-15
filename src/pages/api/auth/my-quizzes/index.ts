@@ -30,27 +30,27 @@ const createQuiz = async (req: VercelRequest, res: VercelResponse) => {
     description,
     passMarkPercentage,
   };
-  try {
-    let response = await controller.create(quiz, userInfo.userId as string);
-    return res.status(200).send(response);
-  } catch (error) {
-    return res.status(500).send((error as any)?.message || MESSAGE_ERROR);
-  }
+
+  let response = await controller.create(quiz, userInfo.userId as string);
+  return res.status(200).send(response);
 };
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   await runCorsMiddleware(req, res);
+  try {
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+    if (req.method === 'POST') {
+      return await createQuiz(req, res);
+    }
 
-  if (req.method === 'POST') {
-    return createQuiz(req, res);
-  }
-
-  if (req.method === 'GET') {
-    return getQuizzesForUser(req, res);
+    if (req.method === 'GET') {
+      return await getQuizzesForUser(req, res);
+    }
+  } catch (error) {
+    return res.status(500).send((error as any)?.message || MESSAGE_ERROR);
   }
 
   res.setHeader('Allow', ['POST', 'GET']);
