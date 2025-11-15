@@ -1,6 +1,33 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runCorsMiddleware } from '../../../../../../common/middleware/cors';
-import { createUpdateDeleteQuestion } from '../../../../../../common/utils/question';
+
+import controllerPostgres from '../../../../../../common/infrastructure/postgres/controllers/postgres-question-controller';
+import { QuizQuestion } from '../../../../../../common/types/QuizQuestion';
+import { getUserIDFromAuthToken } from '../../../../../../common/utils/auth';
+
+export let controller = controllerPostgres;
+
+const createQuizQuestion = async (req: VercelRequest, res: VercelResponse) => {
+  const { quizId } = req.query;
+  const { questionContent, answers } = req.body;
+
+  const userInfo = await getUserIDFromAuthToken(req);
+  if (userInfo.error) {
+    return res.status(400).send(userInfo.error);
+  }
+
+  let quizQuestion: Partial<QuizQuestion> = {
+    quizId: quizId as string,
+    questionContent,
+    answers,
+  };
+
+  let response = await controller.create(
+    quizQuestion,
+    userInfo.userId as string
+  );
+  return res.status(200).send(response);
+};
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   await runCorsMiddleware(req, res);
@@ -9,7 +36,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   }
 
   if (req.method === 'POST') {
-    return createUpdateDeleteQuestion(req, res);
+    return createQuizQuestion(req, res);
   }
 
   res.setHeader('Allow', ['POST', 'GET']);

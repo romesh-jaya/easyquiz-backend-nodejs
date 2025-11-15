@@ -1,23 +1,15 @@
-import QuizController from '../../../controllers/quiz';
-import CreateQuiz from '../../../use-cases/quiz/create';
-import GetQuiz from '../../../use-cases/quiz/get';
-import InviteQuizTaker from '../../../use-cases/quiz/inviteQuizTaker';
-import UpdateQuiz from '../../../use-cases/quiz/update';
-import UpdateQuestionOrder from '../../../use-cases/quiz/updateQuestionOrder';
-import UpdateQuizStatus from '../../../use-cases/quiz/updateQuizStatus';
-import QuizPostgresDAO from '../quiz';
-import QuizAttemptPostgresDAO from '../quizAttempt';
+import QuizQuestionController from '../../../controllers/quiz-question';
+import CreateQuizQuestion from '../../../use-cases/quiz-question/create';
+import GetQuizQuestion from '../../../use-cases/quiz-question/get';
+import UpdateQuizQuestion from '../../../use-cases/quiz-question/update';
+import QuizQuestionPostgresDAO from '../quizQuestion';
 
-let quizDAO = new QuizPostgresDAO();
-let quizAttemptDAO = new QuizAttemptPostgresDAO();
+let quizQuestionDAO = new QuizQuestionPostgresDAO();
 
-let controller = new QuizController(
-  new CreateQuiz(quizDAO),
-  new GetQuiz(quizDAO),
-  new UpdateQuiz(quizDAO),
-  new InviteQuizTaker(quizDAO, quizAttemptDAO),
-  new UpdateQuestionOrder(quizDAO),
-  new UpdateQuizStatus(quizDAO)
+let controller = new QuizQuestionController(
+  new CreateQuizQuestion(quizQuestionDAO),
+  new GetQuizQuestion(quizQuestionDAO),
+  new UpdateQuizQuestion(quizQuestionDAO)
 );
 
 export default controller;

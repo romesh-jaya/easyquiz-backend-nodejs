@@ -7,7 +7,7 @@ import { QuizQuestion } from '../../types/QuizQuestion';
 import { Logger } from '../logger/logger';
 import QuizPostgresDAO from './quiz';
 
-export default class QuizAttemptPostgresDAO implements IQuizQuestionDAO {
+export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
   logger: Logger;
   constructor() {
     this.logger = new Logger();
