@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
 import { getUserIDFromAuthToken } from '../../../../common/utils/auth';
-import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-quiz-controller';
 import { Quiz } from '../../../../common/types/Quiz';
+import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-quiz-controller';
 
-let controller = controllerPostgres;
+export let controller = controllerPostgres;
 
 const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;
