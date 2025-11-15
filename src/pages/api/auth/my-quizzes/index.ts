@@ -6,7 +6,7 @@ import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
 import { Quiz } from '../../../../common/types/Quiz';
 import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-quiz-controller';
 
-let controller = controllerPostgres;
+export let controller = controllerPostgres;
 
 const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
   const userInfo = await getUserEmailFromAuthToken(req);
