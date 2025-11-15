@@ -22,7 +22,7 @@ const updateQuestionOrder = async (req: VercelRequest, res: VercelResponse) => {
   }
 
   // At this point, we definitely know the user's email
-  const email = userInfo.email ?? '';
+  const email = userInfo.userId ?? '';
 
   // Note: we return status 200 in some cases as we need to send a JS object
   try {
