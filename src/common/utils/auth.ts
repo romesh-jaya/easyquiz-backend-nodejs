@@ -13,6 +13,7 @@ export const getAuthToken = (req: VercelRequest): string | null => {
   return null;
 };
 
+// Didn't add this as a middleware as it is Postgres dependant
 export const getUserIDFromAuthToken = async (
   req: VercelRequest
 ): Promise<UserInfo> => {
