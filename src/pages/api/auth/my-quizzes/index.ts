@@ -3,29 +3,10 @@ import { IPostgresError } from '../../../../common/interfaces/Other/IPostgresErr
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
 import postgresClient from '../../../../common/postgres';
 import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
-import { createUpdateQuiz } from '../../../../common/utils/quiz';
-import QuizController from '../../../../common/controllers/quiz';
-import QuizPostgresDAO from '../../../../common/infrastructure/postgres/quiz';
-import QuizAttemptPostgresDAO from '../../../../common/infrastructure/postgres/quizAttempt';
-import CreateQuiz from '../../../../common/use-cases/quiz/create';
-import GetQuiz from '../../../../common/use-cases/quiz/get';
-import InviteQuizTaker from '../../../../common/use-cases/quiz/inviteQuizTaker';
-import UpdateQuiz from '../../../../common/use-cases/quiz/update';
-import UpdateQuestionOrder from '../../../../common/use-cases/quiz/updateQuestionOrder';
-import UpdateQuizStatus from '../../../../common/use-cases/quiz/updateQuizStatus';
 import { Quiz } from '../../../../common/types/Quiz';
+import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-quiz-controller';
 
-let quizDAO = new QuizPostgresDAO();
-let quizAttemptDAO = new QuizAttemptPostgresDAO();
-
-let controller = new QuizController(
-  new CreateQuiz(quizDAO),
-  new GetQuiz(quizDAO),
-  new UpdateQuiz(quizDAO),
-  new InviteQuizTaker(quizDAO, quizAttemptDAO),
-  new UpdateQuestionOrder(quizDAO),
-  new UpdateQuizStatus(quizDAO)
-);
+let controller = controllerPostgres;
 
 const getQuizzesForUser = async (req: VercelRequest, res: VercelResponse) => {
   const userInfo = await getUserEmailFromAuthToken(req);
