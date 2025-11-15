@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import postgresClient from '../../../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../../../common/utils/auth';
+import { getUserIDFromAuthToken } from '../../../../../common/utils/auth';
 
 const updateQuestionOrder = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;
@@ -16,7 +16,7 @@ const updateQuestionOrder = async (req: VercelRequest, res: VercelResponse) => {
     return res.status(400).send('Error: questionOrder must be an array');
   }
 
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }

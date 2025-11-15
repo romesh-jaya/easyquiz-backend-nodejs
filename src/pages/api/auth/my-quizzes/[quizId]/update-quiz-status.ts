@@ -3,7 +3,7 @@ import { QuizStatus } from '../../../../../common/enums/QuizStatus';
 import { IPostgresError } from '../../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import postgresClient from '../../../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../../../common/utils/auth';
+import { getUserIDFromAuthToken } from '../../../../../common/utils/auth';
 
 const updateQuizStatus = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;
@@ -20,7 +20,7 @@ const updateQuizStatus = async (req: VercelRequest, res: VercelResponse) => {
       .send(`Error: status was not one of the values: ${statusValues}`);
   }
 
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }

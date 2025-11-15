@@ -3,7 +3,7 @@ import { IAnswer } from '../../../../../common/interfaces/Other/IAnswer';
 import { IPostgresError } from '../../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import postgresClient from '../../../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../../../common/utils/auth';
+import { getUserIDFromAuthToken } from '../../../../../common/utils/auth';
 import { getQuestionsForQuizInOrder } from '../../../../../common/utils/questions';
 import { IQuestionWithoutCorrectAnswers } from '../../../../../common/interfaces/Other/IQuestionWithoutCorrectAnswers';
 
@@ -15,7 +15,7 @@ const inviteQuizTaker = async (req: VercelRequest, res: VercelResponse) => {
     return res.status(400).send('Error: quizTaker was found to be empty');
   }
 
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }

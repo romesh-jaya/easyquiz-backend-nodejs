@@ -2,19 +2,19 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
 import postgresClient from '../../../../common/postgres';
-import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
+import { getUserIDFromAuthToken } from '../../../../common/utils/auth';
 
 const getOthersQuizzesWithoutCorrectAnswersForUser = async (
   req: VercelRequest,
   res: VercelResponse
 ) => {
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
 
   // At this point, we definitely know the user's email
-  const email = userInfo.email ?? '';
+  const email = userInfo.userId ?? '';
 
   try {
     const queryText =

@@ -1,6 +1,7 @@
 import { VercelRequest } from '@vercel/node';
 import { UserInfo } from '../types/UserInfo';
 import { auth } from '../firebase';
+import postgresClient from '../postgres';
 
 export const getAuthToken = (req: VercelRequest): string | null => {
   if (
@@ -12,7 +13,7 @@ export const getAuthToken = (req: VercelRequest): string | null => {
   return null;
 };
 
-export const getUserEmailFromAuthToken = async (
+export const getUserIDFromAuthToken = async (
   req: VercelRequest
 ): Promise<UserInfo> => {
   const authToken = getAuthToken(req);
@@ -30,7 +31,17 @@ export const getUserEmailFromAuthToken = async (
     if (!userEmail) {
       return { error: 'Calculating user email from auth token failed' };
     }
-    return { email: userEmail };
+
+    try {
+      const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
+      let data = await postgresClient.query(queryText, [userEmail]);
+      if (!data?.rows[0]) {
+        return { error: `Error: no userdata was found for user: ${userEmail}` };
+      }
+      return { userId: data?.rows[0].id };
+    } catch (err) {
+      return { error: 'Error querying quiz_user table in DB' };
+    }
   } catch (e) {
     return { error: 'You are not authorized to make this request' };
   }

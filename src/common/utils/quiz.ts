@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../interfaces/Other/IPostgresError';
 import postgresClient from '../postgres';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserEmailFromAuthToken } from '../utils/auth';
+import { getUserIDFromAuthToken } from '../utils/auth';
 
 export const updateQuestionOrder = async (
   client: any,
@@ -47,7 +47,7 @@ export const createUpdateQuiz = async (
       );
   }
 
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }

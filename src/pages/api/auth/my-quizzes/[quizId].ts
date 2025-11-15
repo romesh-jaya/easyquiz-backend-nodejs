@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
-import { getUserEmailFromAuthToken } from '../../../../common/utils/auth';
+import { getUserIDFromAuthToken } from '../../../../common/utils/auth';
 import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-quiz-controller';
 import { Quiz } from '../../../../common/types/Quiz';
 
@@ -8,14 +8,14 @@ let controller = controllerPostgres;
 
 const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
   const { quizId } = req.query;
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
 
   let quizWithDetails = await controller.getQuizWithDetails(
     quizId as string,
-    userInfo.email as string
+    userInfo.userId as string
   );
   return res.status(200).send(quizWithDetails);
 };
@@ -23,7 +23,7 @@ const getQuizWithDetails = async (req: VercelRequest, res: VercelResponse) => {
 const updateQuiz = async (req: VercelRequest, res: VercelResponse) => {
   const { quizName, description, passMarkPercentage } = req.body;
 
-  const userInfo = await getUserEmailFromAuthToken(req);
+  const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
@@ -35,7 +35,7 @@ const updateQuiz = async (req: VercelRequest, res: VercelResponse) => {
     passMarkPercentage,
   };
 
-  let response = await controller.update(quiz, userInfo.email as string);
+  let response = await controller.update(quiz, userInfo.userId as string);
   return res.status(200).send(response);
 };
 
