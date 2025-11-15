@@ -41,6 +41,7 @@ const updateQuiz = async (req: VercelRequest, res: VercelResponse) => {
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   await runCorsMiddleware(req, res);
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }

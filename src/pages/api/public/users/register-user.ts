@@ -90,7 +90,7 @@ async function createOrUpdateUserInAuth(email: string, password: string) {
     // Attempt to get user by email
     const existingUser = await auth.getUserByEmail(email);
     console.log('User with this email already exists:', existingUser.uid);
-    // You can choose to update the existing user here if needed
+    // TODO: update user pwd
     // await admin.auth().updateUser(existingUser.uid, { displayName: displayName });
     return existingUser;
   } catch (err) {
