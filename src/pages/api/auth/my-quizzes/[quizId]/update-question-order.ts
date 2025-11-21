@@ -3,6 +3,7 @@ import { runCorsMiddleware } from '../../../../../common/middleware/cors';
 import { getUserIDFromAuthToken } from '../../../../../common/utils/auth';
 
 import controllerPostgres from '../../../../../common/infrastructure/postgres/controllers/postgres-quiz-controller';
+import { MESSAGE_ERROR } from '../../../../../common/constants/messages';
 
 export let controller = controllerPostgres;
 
@@ -26,12 +27,16 @@ const updateQuestionOrder = async (req: VercelRequest, res: VercelResponse) => {
 export default async function (req: VercelRequest, res: VercelResponse) {
   await runCorsMiddleware(req, res);
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  try {
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
 
-  if (req.method === 'POST') {
-    return updateQuestionOrder(req, res);
+    if (req.method === 'POST') {
+      return updateQuestionOrder(req, res);
+    }
+  } catch (error) {
+    return res.status(500).send((error as any)?.message || MESSAGE_ERROR);
   }
 
   res.setHeader('Allow', ['POST']);

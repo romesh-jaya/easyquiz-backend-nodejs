@@ -43,7 +43,9 @@ export const getUserIDFromAuthToken = async (
       }
       return { userId: data?.rows[0].id };
     } catch (err) {
-      return { error: 'Error querying quiz_user table in DB' };
+      return {
+        error: 'Error querying quiz_user table in DB: ' + (err as any)?.message,
+      };
     }
   } catch (e) {
     return { error: 'You are not authorized to make this request' };
