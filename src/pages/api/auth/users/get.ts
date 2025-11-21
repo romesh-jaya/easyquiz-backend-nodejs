@@ -23,15 +23,15 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   }
 
   // At this point, we definitely know the user's email
-  const email = userInfo.userId ?? '';
+  const userId = userInfo.userId ?? '';
 
   try {
-    const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
-    data = await postgresClient.query(queryText, [email]);
+    const queryText = 'SELECT * FROM public.quiz_user WHERE id = $1';
+    data = await postgresClient.query(queryText, [userId]);
     if (!data?.rows[0]) {
       return res
         .status(400)
-        .send(`Error: no userdata was found for user: ${email}`);
+        .send(`Error: no userdata was found for user: ${userId}`);
     }
   } catch (err) {
     return res.status(500).send({

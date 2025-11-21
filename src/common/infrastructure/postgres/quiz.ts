@@ -121,7 +121,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
 
       if (quizDataObject) {
         const questionQuery =
-          'SELECT * FROM public.quiz_question WHERE quizId = $1';
+          'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
         const questionData = await postgresClient.query(questionQuery, [id]);
 
         quizDataObject.questions = questionData?.rows;
