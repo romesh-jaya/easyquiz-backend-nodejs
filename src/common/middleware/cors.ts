@@ -2,7 +2,7 @@ import Cors from 'cors';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const cors = Cors({
-  methods: ['POST', 'PUT', 'GET', 'HEAD'],
+  methods: ['POST', 'PUT', 'GET', 'HEAD', 'DELETE'],
 });
 
 // Helper method to wait for a middleware to execute before continuing

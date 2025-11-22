@@ -107,40 +107,55 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION trigger_timestamp_rev_update_on_quiz_from_question() RETURNS TRIGGER LANGUAGE PLPGSQL AS $$
+CREATE OR REPLACE FUNCTION trigger_timestamp_rev_update_on_quiz_from_question()
+RETURNS TRIGGER 
+LANGUAGE PLPGSQL AS $$
 DECLARE
-  _quiz_status 		VARCHAR(20);
-  _quiz_revision 	INT;
+    _quiz_status VARCHAR(20);
+    _quiz_revision INT;
 BEGIN
 
-	IF TG_OP = 'DELETE' THEN
-		SELECT status, revision
-		INTO _quiz_status, _quiz_revision
-		FROM public.quiz
-		WHERE id = OLD.quiz_id;
+    -- 1. DETERMINE WHICH ROW (OLD/NEW) TO USE AND FETCH QUIZ STATUS
+    IF TG_OP = 'DELETE' THEN
+        -- Use OLD for DELETE operation
+        SELECT status, revision
+        INTO _quiz_status, _quiz_revision
+        FROM public.quiz
+        WHERE id = OLD.quiz_id;
 
-		UPDATE public.quiz
-		SET last_updated = NOW(), 
-			revision =  _quiz_revision + 1
-		WHERE id = OLD.quiz_id;
-	ELSE
-		SELECT status, revision
-		INTO _quiz_status, _quiz_revision
-		FROM public.quiz
-		WHERE id = NEW.quiz_id;
+    ELSE -- TG_OP is 'INSERT' or 'UPDATE'
+        -- Use NEW for INSERT/UPDATE operations
+        SELECT status, revision
+        INTO _quiz_status, _quiz_revision
+        FROM public.quiz
+        WHERE id = NEW.quiz_id;
+    END IF;
 
-		UPDATE public.quiz
-		SET last_updated = NOW(), 
-			revision =  _quiz_revision + 1
-		WHERE id = NEW.quiz_id;
-	END IF;
+    -- 2. CRITICAL: RAISE EXCEPTION BEFORE ATTEMPTING UPDATE/DELETE
+    -- This ensures changes are prohibited if the quiz is in a final state.
+    IF _quiz_status = 'published' OR _quiz_status = 'archived' THEN
+        RAISE EXCEPTION 'Cannot add, delete or update questions when the quiz is in Published or Archived state.' USING ERRCODE = 'ZZ999';
+    END IF;
 
-	IF _quiz_status = 'published' OR _quiz_status = 'archived' THEN
-	  RAISE EXCEPTION 'Cannot add, delete or update questions when the quiz is in Published or Archived state.' USING ERRCODE = 'ZZ999';
-	END IF;
+    -- 3. PERFORM THE UPDATE AFTER CHECKING STATUS
+    IF TG_OP = 'DELETE' THEN
+        UPDATE public.quiz
+        SET last_updated = NOW(), 
+          revision = _quiz_revision + 1
+        WHERE id = OLD.quiz_id;
+        
+        -- MUST RETURN OLD for the DELETE on quiz_question to proceed
+        RETURN OLD; 
 
+    ELSE -- TG_OP is 'INSERT' or 'UPDATE'
+        UPDATE public.quiz
+        SET last_updated = NOW(), 
+          revision = _quiz_revision + 1
+        WHERE id = NEW.quiz_id;
 
-  RETURN NEW;
+        -- MUST RETURN NEW for the INSERT/UPDATE on quiz_question to proceed
+        RETURN NEW; 
+    END IF;
 END;
 $$;
 

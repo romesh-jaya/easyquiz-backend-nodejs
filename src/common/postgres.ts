@@ -14,7 +14,7 @@ const postgresClient = new Pool({
 });
 
 // Attach the pool to ensure idle connections close before suspension
-attachDatabasePool(postgresClient);
+// attachDatabasePool(postgresClient);
 
 // taken from https://github.com/brianc/node-pg-types/blob/master/lib/textParsers.js
 const parseTimestamp = function (value: string) {
