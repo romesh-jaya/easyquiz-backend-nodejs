@@ -14,18 +14,28 @@ const checkUserAccess = async (
 ): Promise<boolean> => {
   if (actionType !== CRUDActionType.Insert) {
     // Check for user access to the question
-    const queryText =
-      'SELECT 1 FROM public.quiz_question question, public.quiz quiz WHERE question.quizId = quiz.id AND question.id = $1 AND quiz.created_by_user = $2';
-    const quizData = await postgresClient.query(queryText, [questionId, email]);
-    const quizDataObject = quizData?.rows[0];
-    return !!quizDataObject;
+    const client = await postgresClient.connect();
+    try {
+      const queryText =
+        'SELECT 1 FROM public.quiz_question question, public.quiz quiz WHERE question.quizId = quiz.id AND question.id = $1 AND quiz.created_by_user = $2';
+      const quizData = await client.query(queryText, [questionId, email]);
+      const quizDataObject = quizData?.rows[0];
+      return !!quizDataObject;
+    } finally {
+      client.end();
+    }
   } else {
     // Check for user access to the quiz
-    const queryText =
-      'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
-    const quizData = await postgresClient.query(queryText, [quizId, email]);
-    const quizDataObject = quizData?.rows[0];
-    return !!quizDataObject;
+    const client = await postgresClient.connect();
+    try {
+      const queryText =
+        'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
+      const quizData = await client.query(queryText, [quizId, email]);
+      const quizDataObject = quizData?.rows[0];
+      return !!quizDataObject;
+    } finally {
+      client.end();
+    }
   }
 };
 

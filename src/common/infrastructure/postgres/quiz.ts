@@ -101,10 +101,15 @@ export default class QuizPostgresDAO implements IQuizDAO {
 
   async get(id: string, userId: string): Promise<Quiz> {
     try {
-      const queryText =
-        'SELECT * FROM public.quiz WHERE created_by_user = $1 AND id = $2';
-      const data = await postgresClient.query(queryText, [userId, id]);
-      return data?.rows;
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'SELECT * FROM public.quiz WHERE created_by_user = $1 AND id = $2';
+        const data = await client.query(queryText, [userId, id]);
+        return data?.rows;
+      } finally {
+        client.end();
+      }
     } catch (err) {
       const error = err as IPostgresError;
       this.logger.error('Error querying quiz table in DB: ' + error.stack);
@@ -114,18 +119,23 @@ export default class QuizPostgresDAO implements IQuizDAO {
 
   async getQuizWithDetails(id: string, userId: string): Promise<Quiz> {
     try {
-      const queryText =
-        'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
-      const quizData = await postgresClient.query(queryText, [id, userId]);
-      const quizDataObject = quizData?.rows[0];
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'SELECT * FROM public.quiz WHERE id = $1 AND created_by_user = $2';
+        const quizData = await client.query(queryText, [id, userId]);
+        const quizDataObject = quizData?.rows[0];
 
-      if (quizDataObject) {
-        const questionQuery =
-          'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
-        const questionData = await postgresClient.query(questionQuery, [id]);
+        if (quizDataObject) {
+          const questionQuery =
+            'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
+          const questionData = await client.query(questionQuery, [id]);
 
-        quizDataObject.questions = questionData?.rows;
-        return quizDataObject;
+          quizDataObject.questions = questionData?.rows;
+          return quizDataObject;
+        }
+      } finally {
+        client.end();
       }
       throw new Error('Quiz not found');
     } catch (err) {
@@ -224,10 +234,15 @@ export default class QuizPostgresDAO implements IQuizDAO {
 
   async getQuizzesForUser(userId: string): Promise<Quiz[]> {
     try {
-      const queryText =
-        'SELECT * FROM public.quiz WHERE created_by_user = $1 ORDER BY last_updated DESC';
-      const data = await postgresClient.query(queryText, [userId]);
-      return data?.rows;
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'SELECT * FROM public.quiz WHERE created_by_user = $1 ORDER BY last_updated DESC';
+        const data = await client.query(queryText, [userId]);
+        return data?.rows;
+      } finally {
+        client.end();
+      }
     } catch (err) {
       const error = err as IPostgresError;
       this.logger.error('Error fetching quizzes for user: ' + error.stack);
@@ -239,9 +254,15 @@ export default class QuizPostgresDAO implements IQuizDAO {
     userId: string
   ): Promise<Quiz[]> {
     try {
-      const queryText = 'SELECT * FROM public.quiz WHERE created_by_user = $1';
-      const data = await postgresClient.query(queryText, [userId]);
-      return data?.rows;
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'SELECT * FROM public.quiz WHERE created_by_user = $1';
+        const data = await client.query(queryText, [userId]);
+        return data?.rows;
+      } finally {
+        client.end();
+      }
     } catch (err) {
       const error = err as IPostgresError;
       this.logger.error('Error fetching others quizzes: ' + error.stack);

@@ -59,13 +59,18 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
 
   async get(id: string, userId: string): Promise<QuizAttempt> {
     try {
-      const queryText =
-        'SELECT * FROM public.quiz_attempt WHERE quiz_id = $1 AND quiz_taker = $2';
-      const data = await postgresClient.query(queryText, [id, userId]);
-      if (data.rows.length === 0) {
-        throw new Error('Quiz attempt not found');
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'SELECT * FROM public.quiz_attempt WHERE quiz_id = $1 AND quiz_taker = $2';
+        const data = await client.query(queryText, [id, userId]);
+        if (data.rows.length === 0) {
+          throw new Error('Quiz attempt not found');
+        }
+        return data.rows[0];
+      } finally {
+        client.end();
       }
-      return data.rows[0];
     } catch (err) {
       const error = err as IPostgresError;
       console.error('Error while fetching quiz attempt: ', error.stack);
@@ -82,15 +87,20 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
     try {
       const queryText =
         'SELECT * FROM public.quiz_attempt WHERE quiz_id = $1 AND quiz_revision = $2 AND quiz_taker = $3';
-      const data = await postgresClient.query(queryText, [
-        id,
-        quizRevision,
-        quizTaker,
-      ]);
-      if (data.rows.length === 0) {
-        throw new Error('Quiz attempt not found');
+      const client = await postgresClient.connect();
+      try {
+        const data = await client.query(queryText, [
+          id,
+          quizRevision,
+          quizTaker,
+        ]);
+        if (data.rows.length === 0) {
+          throw new Error('Quiz attempt not found');
+        }
+        return data.rows[0];
+      } finally {
+        client.end();
       }
-      return data.rows[0];
     } catch (err) {
       const error = err as IPostgresError;
       console.error(

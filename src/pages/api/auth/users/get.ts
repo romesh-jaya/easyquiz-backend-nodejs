@@ -26,12 +26,17 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   const userId = userInfo.userId ?? '';
 
   try {
-    const queryText = 'SELECT * FROM public.quiz_user WHERE id = $1';
-    data = await postgresClient.query(queryText, [userId]);
-    if (!data?.rows[0]) {
-      return res
-        .status(400)
-        .send(`Error: no userdata was found for user: ${userId}`);
+    const client = await postgresClient.connect();
+    try {
+      const queryText = 'SELECT * FROM public.quiz_user WHERE id = $1';
+      data = await client.query(queryText, [userId]);
+      if (!data?.rows[0]) {
+        return res
+          .status(400)
+          .send(`Error: no userdata was found for user: ${userId}`);
+      }
+    } finally {
+      client.end();
     }
   } catch (err) {
     return res.status(500).send({

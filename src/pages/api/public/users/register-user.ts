@@ -30,13 +30,18 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
   // Note: we return status 200 in some cases as we need to send a JS object
   try {
-    const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
-    let data = await postgresClient.query(queryText, [email]);
-    if (data?.rows[0]) {
-      return res.status(200).send({
-        error: 'Email address is already in use',
-        isGeneralError: true,
-      });
+    const client = await postgresClient.connect();
+    try {
+      const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
+      let data = await client.query(queryText, [email]);
+      if (data?.rows[0]) {
+        return res.status(200).send({
+          error: 'Email address is already in use',
+          isGeneralError: true,
+        });
+      }
+    } finally {
+      client.end();
     }
   } catch (err) {
     console.error('Error while signing up: ', (err as any)?.message);

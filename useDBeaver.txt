@@ -1,0 +1,1 @@
+PGAdmin gives error for Clever cloud

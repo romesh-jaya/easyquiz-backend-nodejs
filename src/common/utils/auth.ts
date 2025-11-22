@@ -36,12 +36,19 @@ export const getUserIDFromAuthToken = async (
     }
 
     try {
-      const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
-      let data = await postgresClient.query(queryText, [userEmail]);
-      if (!data?.rows[0]) {
-        return { error: `Error: no userdata was found for user: ${userEmail}` };
+      const client = await postgresClient.connect();
+      try {
+        const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
+        let data = await client.query(queryText, [userEmail]);
+        if (!data?.rows[0]) {
+          return {
+            error: `Error: no userdata was found for user: ${userEmail}`,
+          };
+        }
+        return { userId: data?.rows[0].id };
+      } finally {
+        client.end();
       }
-      return { userId: data?.rows[0].id };
     } catch (err) {
       return {
         error: 'Error querying quiz_user table in DB: ' + (err as any)?.message,

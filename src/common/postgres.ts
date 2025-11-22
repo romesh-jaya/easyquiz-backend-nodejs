@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const types = require('pg').types;
 const parseTimestampTz = require('postgres-date');
+import { attachDatabasePool } from '@vercel/functions';
 
 // Create a connection pool using the connection information provided.
 const postgresClient = new Pool({
@@ -9,8 +10,11 @@ const postgresClient = new Pool({
   database: process.env.POSTGRES_DATABASE,
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.POSTGRES_PORT,
-  rejectUnauthorized: false
+  rejectUnauthorized: false,
 });
+
+// Attach the pool to ensure idle connections close before suspension
+attachDatabasePool(postgresClient);
 
 // taken from https://github.com/brianc/node-pg-types/blob/master/lib/textParsers.js
 const parseTimestamp = function (value: string) {

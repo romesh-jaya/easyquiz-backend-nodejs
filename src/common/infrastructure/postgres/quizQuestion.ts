@@ -60,15 +60,20 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
 
   async get(id: string, userId: string): Promise<QuizQuestion> {
     try {
-      const queryText =
-        'SELECT * FROM public.quiz_question WHERE id = $1 AND quiz_id IN (SELECT id FROM public.quiz WHERE created_by_user = $2)';
-      const data = await postgresClient.query(queryText, [id, userId]);
-      if (data.rows.length === 0) {
-        throw new Error(
-          'Quiz question not found or you do not have permission to view it.'
-        );
+      const client = await postgresClient.connect();
+      try {
+        const queryText =
+          'SELECT * FROM public.quiz_question WHERE id = $1 AND quiz_id IN (SELECT id FROM public.quiz WHERE created_by_user = $2)';
+        const data = await client.query(queryText, [id, userId]);
+        if (data.rows.length === 0) {
+          throw new Error(
+            'Quiz question not found or you do not have permission to view it.'
+          );
+        }
+        return data.rows[0];
+      } finally {
+        client.end();
       }
-      return data.rows[0];
     } catch (err) {
       const error = err as IPostgresError;
       this.logger.error('Error while fetching quiz question: ' + error.stack);
