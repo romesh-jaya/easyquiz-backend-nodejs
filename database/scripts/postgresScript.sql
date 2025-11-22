@@ -111,7 +111,7 @@ CREATE OR REPLACE FUNCTION trigger_timestamp_rev_update_on_quiz_from_question()
 RETURNS TRIGGER 
 LANGUAGE PLPGSQL AS $$
 DECLARE
-    _quiz_status VARCHAR(20);
+    _quiz_status VARCHAR;
     _quiz_revision INT;
 BEGIN
 
@@ -140,8 +140,7 @@ BEGIN
     -- 3. PERFORM THE UPDATE AFTER CHECKING STATUS
     IF TG_OP = 'DELETE' THEN
         UPDATE public.quiz
-        SET last_updated = NOW(), 
-          revision = _quiz_revision + 1
+        SET revision = _quiz_revision + 1
         WHERE id = OLD.quiz_id;
         
         -- MUST RETURN OLD for the DELETE on quiz_question to proceed
@@ -149,8 +148,7 @@ BEGIN
 
     ELSE -- TG_OP is 'INSERT' or 'UPDATE'
         UPDATE public.quiz
-        SET last_updated = NOW(), 
-          revision = _quiz_revision + 1
+        SET revision = _quiz_revision + 1
         WHERE id = NEW.quiz_id;
 
         -- MUST RETURN NEW for the INSERT/UPDATE on quiz_question to proceed
