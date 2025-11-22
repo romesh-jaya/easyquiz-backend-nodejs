@@ -95,8 +95,9 @@ async function createOrUpdateUserInAuth(email: string, password: string) {
     // Attempt to get user by email
     const existingUser = await auth.getUserByEmail(email);
     console.log('User with this email already exists:', existingUser.uid);
-    // TODO: update user pwd
-    // await admin.auth().updateUser(existingUser.uid, { displayName: displayName });
+    // Since we dont know the old pwd, delete the old user and create a new one
+    await auth.deleteUser(existingUser.uid);
+    await auth.createUser({ email, password });
     return existingUser;
   } catch (err) {
     const error = err as IFirebaseAuthError;

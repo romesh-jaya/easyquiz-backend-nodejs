@@ -29,8 +29,6 @@ export const getUserIDFromAuthToken = async (
     const userInfo = await auth.verifyIdToken(authToken);
     const userEmail = userInfo.email;
 
-    console.log('Authenticated user email: ', userEmail);
-
     if (!userEmail) {
       return { error: 'Calculating user email from auth token failed' };
     }
