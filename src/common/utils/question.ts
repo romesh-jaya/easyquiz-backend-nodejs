@@ -22,7 +22,7 @@ const checkUserAccess = async (
       const quizDataObject = quizData?.rows[0];
       return !!quizDataObject;
     } finally {
-      client.end();
+      client.release();
     }
   } else {
     // Check for user access to the quiz
@@ -34,7 +34,7 @@ const checkUserAccess = async (
       const quizDataObject = quizData?.rows[0];
       return !!quizDataObject;
     } finally {
-      client.end();
+      client.release();
     }
   }
 };
@@ -130,7 +130,7 @@ export const createUpdateDeleteQuestion = async (
       await client.query('ROLLBACK');
       throw e;
     } finally {
-      client.end();
+      client.release();
     }
   } catch (err) {
     const error = err as IPostgresError;

@@ -41,7 +41,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
         });
       }
     } finally {
-      client.end();
+      client.release();
     }
   } catch (err) {
     console.error('Error while signing up: ', (err as any)?.message);
@@ -75,7 +75,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
       await client.query('ROLLBACK');
       throw e;
     } finally {
-      client.end();
+      client.release();
     }
   } catch (err) {
     const error = err as IPostgresError;

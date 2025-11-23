@@ -46,7 +46,7 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
         await client.query('ROLLBACK');
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -72,7 +72,7 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
         }
         return data.rows[0];
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -112,7 +112,7 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
         await client.query('ROLLBACK');
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -149,7 +149,7 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
         await client.query('ROLLBACK');
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;

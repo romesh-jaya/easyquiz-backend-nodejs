@@ -45,7 +45,7 @@ export const getUserIDFromAuthToken = async (
         }
         return { userId: data?.rows[0].id };
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       return {

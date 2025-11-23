@@ -36,7 +36,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
           .send(`Error: no userdata was found for user: ${userId}`);
       }
     } finally {
-      client.end();
+      client.release();
     }
   } catch (err) {
     return res.status(500).send({

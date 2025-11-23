@@ -40,7 +40,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         await client.query('ROLLBACK');
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -85,7 +85,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         this.logger.error('Error during transaction: ' + e.stack);
         throw new Error('Transaction failed while creating quiz');
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -108,7 +108,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         const data = await client.query(queryText, [userId, id]);
         return data?.rows;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -135,7 +135,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
           return quizDataObject;
         }
       } finally {
-        client.end();
+        client.release();
       }
       throw new Error('Quiz not found');
     } catch (err) {
@@ -163,7 +163,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         await client.query('ROLLBACK');
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -193,7 +193,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         await client.query('ROLLBACK');
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -220,7 +220,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
       } catch (err) {
         throw err;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -241,7 +241,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         const data = await client.query(queryText, [userId]);
         return data?.rows;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;
@@ -261,7 +261,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         const data = await client.query(queryText, [userId]);
         return data?.rows;
       } finally {
-        client.end();
+        client.release();
       }
     } catch (err) {
       const error = err as IPostgresError;

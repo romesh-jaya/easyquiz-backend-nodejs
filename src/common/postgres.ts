@@ -10,6 +10,9 @@ const postgresClient = new Pool({
   database: process.env.POSTGRES_DATABASE,
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.POSTGRES_PORT,
+  max: Number(process.env.POSTGRES_MAX_CLIENTS) || 10,
+  idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT_MS) || 30000,
+  connectionTimeoutMillis: Number(process.env.PG_CONN_TIMEOUT_MS) || 2000,
   rejectUnauthorized: false,
 });
 
@@ -27,6 +30,10 @@ const parseTimestamp = function (value: string) {
 // column into the current timezone as per https://stackoverflow.com/a/67475315
 types.setTypeParser(1114, function (stringValue: string) {
   return parseTimestamp(stringValue); //1114 for time without timezone type
+});
+
+postgresClient.on('error', (err: any) => {
+  console.error('Unexpected PG client error', err);
 });
 
 export default postgresClient;
