@@ -4,6 +4,7 @@ import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { Quiz } from '../../types/Quiz';
+import { QuizQuestion } from '../../types/QuizQuestion';
 import { Logger } from '../logger/logger';
 
 export default class QuizPostgresDAO implements IQuizDAO {
@@ -134,7 +135,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
           if (questionData?.rows) {
             quizDataObject.questions = quizDataObject.question_order?.map(
               (questionId: string) =>
-                questionData.rows.find((q) => q.id === questionId)
+                questionData.rows.find((q: QuizQuestion) => q.id === questionId)
             );
           }
           return quizDataObject;
