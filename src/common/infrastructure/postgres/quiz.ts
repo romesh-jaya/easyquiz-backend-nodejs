@@ -18,7 +18,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
       try {
         await client.query('BEGIN');
         const queryText =
-          'UPDATE public.quiz SET name = $1, description = $2, pass_mark_percentage = $3 WHERE id = $5 AND created_by_user = $6';
+          'UPDATE public.quiz SET name = $1, description = $2, pass_mark_percentage = $3 WHERE id = $4 AND created_by_user = $5';
         const result = await client.query(queryText, [
           data.name,
           data.description,
@@ -131,7 +131,12 @@ export default class QuizPostgresDAO implements IQuizDAO {
             'SELECT * FROM public.quiz_question WHERE quiz_id = $1';
           const questionData = await client.query(questionQuery, [id]);
 
-          quizDataObject.questions = questionData?.rows;
+          if (questionData?.rows) {
+            quizDataObject.questions = quizDataObject.question_order?.map(
+              (questionId: string) =>
+                questionData.rows.find((q) => q.id === questionId)
+            );
+          }
           return quizDataObject;
         }
       } finally {

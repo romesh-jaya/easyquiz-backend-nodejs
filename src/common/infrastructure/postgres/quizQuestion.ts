@@ -132,7 +132,6 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
         const queryText =
           'DELETE FROM public.quiz_question WHERE id = $1 AND quiz_id IN (SELECT id FROM public.quiz WHERE created_by_user = $2)';
 
-        console.log('querytext:', queryText, 'id:', id, 'userId:', userId);
         const result = await client.query(queryText, [id, userId]);
 
         if (result.rowCount === 0) {
