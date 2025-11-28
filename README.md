@@ -1,6 +1,6 @@
 # EasyQuiz Backend - NodeJS Serverless
 
-These are NodeJS serverless functions hosted on NextJS SDK, used to interface the Postgres DB and Authentication for EasyQuiz app.
+These are NodeJS serverless functions hosted on NextJS SDK, used to interface the Postgres DB and Authentication for EasyQuiz app available [here](https://github.com/romesh-jaya/easyquiz-quasar).
 
 ## Architecture Overview
 
@@ -10,7 +10,7 @@ This project implements **Clean Architecture** principles to maintain separation
 - **Infrastructure** - Data access layer with database adapters and external service integrations
 - **Interfaces & Types** - Contract definitions (DAOs, request/response types) ensuring loose coupling between layers
 - **Controllers** - Bridge between use cases and infrastructure, orchestrating operations
-- **Middleware & Utils** - Cross-cutting concerns and helper functions
+- **Utils** - Cross-cutting concerns and helper functions
 
 This layered approach allows features to be developed, tested, and modified independently while maintaining clear dependencies.
 
