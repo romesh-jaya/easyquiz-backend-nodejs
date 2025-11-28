@@ -46,7 +46,10 @@ async function createOrUpdateUserInAuth(email: string, password: string) {
   try {
     // Attempt to get user by email
     const existingUser = await auth.getUserByEmail(email);
-    console.log('User with this email already exists:', existingUser.uid);
+    console.log(
+      'User with this email already exists in Auth. Deleting and recreating:',
+      existingUser.uid
+    );
     // Since we dont know the old pwd, delete the old user and create a new one
     await auth.deleteUser(existingUser.uid);
     await auth.createUser({ email, password });

@@ -13,23 +13,36 @@ export default class UserPostgresDAO implements IUserDAO {
     this.logger = new Logger();
   }
 
-  async create(data: Partial<UserInfo>): Promise<IResponse> {
+  private async getByEmail(email: string): Promise<UserInfoResponse> {
     try {
       const client = await postgresClient.connect();
       try {
-        // Check if email already exists
-        const checkEmailQuery =
-          'SELECT * FROM public.quiz_user WHERE email = $1';
-        const emailCheckResult = await client.query(checkEmailQuery, [
-          data.email,
-        ]);
-        if (emailCheckResult?.rows[0]) {
-          return {
-            error: 'Email address is already in use',
-            isGeneralError: true,
-          };
-        }
+        const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
+        const data = await client.query(queryText, [email]);
+        return data?.rows?.[0];
+      } finally {
+        client.release();
+      }
+    } catch (err) {
+      const error = err as IPostgresError;
+      this.logger.error('Error querying quiz_user table in DB: ' + error.stack);
+      throw new Error('Error querying quiz_user table in DB');
+    }
+  }
 
+  async create(data: Partial<UserInfo>): Promise<IResponse> {
+    try {
+      // Check if email already exists
+      const existingUser = await this.getByEmail(data.email ?? '');
+      if (existingUser) {
+        return {
+          error: 'Email address is already in use',
+          isGeneralError: true,
+        };
+      }
+
+      const client = await postgresClient.connect();
+      try {
         await client.query('BEGIN');
         const queryText =
           'INSERT INTO public.quiz_user(id, email, first_name, last_name) VALUES ($1, $2, $3, $4)';
