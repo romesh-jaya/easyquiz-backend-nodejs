@@ -4,6 +4,7 @@ import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { QuizAttempt } from '../../types/Request/QuizAttempt';
+import { QuizAttemptResponse } from '../../types/Response/QuizAttemptResponse';
 import { Logger } from '../logger/logger';
 import QuizPostgresDAO from './quiz';
 
@@ -57,7 +58,7 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
     }
   }
 
-  async get(id: string, userId: string): Promise<QuizAttempt> {
+  async get(id: string, userId: string): Promise<QuizAttemptResponse> {
     try {
       const client = await postgresClient.connect();
       try {
@@ -83,7 +84,7 @@ export default class QuizAttemptPostgresDAO implements IQuizAttemptDAO {
     quizRevision: number,
     quizTaker: string,
     userId: string
-  ): Promise<QuizAttempt> {
+  ): Promise<QuizAttemptResponse> {
     try {
       const queryText =
         'SELECT * FROM public.quiz_attempt WHERE quiz_id = $1 AND quiz_revision = $2 AND quiz_taker = $3';

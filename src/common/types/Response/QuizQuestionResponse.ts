@@ -1,8 +1,8 @@
 export type QuizQuestionResponse = {
   id: string;
-  quizId: string;
-  questionContent: string;
+  quiz_id: string;
+  question_content: string;
   answers: string;
   revision: number;
-  lastUpdated: Date;
+  last_updated: Date;
 };

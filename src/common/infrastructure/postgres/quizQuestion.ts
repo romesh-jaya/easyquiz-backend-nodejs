@@ -4,6 +4,7 @@ import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { QuizQuestion } from '../../types/Request/QuizQuestion';
+import { QuizQuestionResponse } from '../../types/Response/QuizQuestionResponse';
 import { Logger } from '../logger/logger';
 import QuizPostgresDAO from './quiz';
 
@@ -58,7 +59,7 @@ export default class QuizQuestionPostgresDAO implements IQuizQuestionDAO {
     }
   }
 
-  async get(id: string, userId: string): Promise<QuizQuestion> {
+  async get(id: string, userId: string): Promise<QuizQuestionResponse> {
     try {
       const client = await postgresClient.connect();
       try {

@@ -1,4 +1,4 @@
 export type UserInfoResponse = {
-  userId?: string;
+  user_id?: string;
   error?: string;
 };

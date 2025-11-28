@@ -5,6 +5,7 @@ import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
 import { Quiz } from '../../types/Request/Quiz';
 import { QuizQuestion } from '../../types/Request/QuizQuestion';
+import { QuizResponse } from '../../types/Response/QuizResponse';
 import { Logger } from '../logger/logger';
 
 export default class QuizPostgresDAO implements IQuizDAO {
@@ -100,7 +101,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
     }
   }
 
-  async get(id: string, userId: string): Promise<Quiz> {
+  async get(id: string, userId: string): Promise<QuizResponse> {
     try {
       const client = await postgresClient.connect();
       try {
@@ -118,7 +119,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
     }
   }
 
-  async getQuizWithDetails(id: string, userId: string): Promise<Quiz> {
+  async getQuizWithDetails(id: string, userId: string): Promise<QuizResponse> {
     try {
       const client = await postgresClient.connect();
       try {
@@ -238,7 +239,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
     }
   }
 
-  async getQuizzesForUser(userId: string): Promise<Quiz[]> {
+  async getQuizzesForUser(userId: string): Promise<QuizResponse[]> {
     try {
       const client = await postgresClient.connect();
       try {
@@ -258,7 +259,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
 
   async getOthersQuizzesWithoutCorrectAnswersForUser(
     userId: string
-  ): Promise<Quiz[]> {
+  ): Promise<QuizResponse[]> {
     try {
       const client = await postgresClient.connect();
       try {

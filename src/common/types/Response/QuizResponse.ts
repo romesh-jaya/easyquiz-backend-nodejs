@@ -1,12 +1,12 @@
 export type QuizResponse = {
   id: string;
-  createdByUser: string;
+  created_by_user: string;
   name: string;
   description: string;
   status: string;
-  questionOrder: string[];
-  passMarkPercentage: number;
-  canRetakeQuiz: boolean;
+  question_order: string[];
+  pass_mark_percentage: number;
+  can_retake_quiz: boolean;
   revision: number;
-  lastUpdated: Date;
+  last_updated: Date;
 };

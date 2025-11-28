@@ -1,11 +1,12 @@
 import { Quiz } from '../../types/Request/Quiz';
+import { QuizResponse } from '../../types/Response/QuizResponse';
 import { IResponse } from '../Other/IResponse';
 
 export interface IQuizDAO {
   create(data: Partial<Quiz>, userId: string): Promise<IResponse>;
   update(data: Partial<Quiz>, userId: string): Promise<IResponse>;
-  get(id: string, userId: string): Promise<Quiz>;
-  getQuizWithDetails(id: string, userId: string): Promise<Quiz>;
+  get(id: string, userId: string): Promise<QuizResponse>;
+  getQuizWithDetails(id: string, userId: string): Promise<QuizResponse>;
 
   updateQuizStatus(
     quizId: string,
@@ -22,6 +23,8 @@ export interface IQuizDAO {
     quizTaker: string,
     userId: string
   ): Promise<IResponse>;
-  getQuizzesForUser(userId: string): Promise<Quiz[]>;
-  getOthersQuizzesWithoutCorrectAnswersForUser(userId: string): Promise<Quiz[]>;
+  getQuizzesForUser(userId: string): Promise<QuizResponse[]>;
+  getOthersQuizzesWithoutCorrectAnswersForUser(
+    userId: string
+  ): Promise<QuizResponse[]>;
 }
