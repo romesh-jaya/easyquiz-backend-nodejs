@@ -1,5 +1,6 @@
 import { IResponse } from '../interfaces/Other/IResponse';
 import { Quiz } from '../types/Request/Quiz';
+import { QuizResponse } from '../types/Response/QuizResponse';
 import CreateQuiz from '../use-cases/quiz/create';
 import GetQuiz from '../use-cases/quiz/get';
 import InviteQuizTaker from '../use-cases/quiz/inviteQuizTaker';
@@ -25,11 +26,11 @@ export default class QuizController {
     return this.updateQuiz.call(data, userId);
   }
 
-  async get(id: string, userId: string): Promise<Quiz> {
+  async get(id: string, userId: string): Promise<QuizResponse> {
     return this.getQuiz.get(id, userId);
   }
 
-  async getQuizWithDetails(id: string, userId: string): Promise<Quiz> {
+  async getQuizWithDetails(id: string, userId: string): Promise<QuizResponse> {
     return this.getQuiz.getQuizWithDetails(id, userId);
   }
 
@@ -57,13 +58,13 @@ export default class QuizController {
     return this.inviteQuizTakerUC.call(quizId, quizTaker, userId);
   }
 
-  async getQuizzesForUser(userId: string): Promise<Quiz[]> {
+  async getQuizzesForUser(userId: string): Promise<QuizResponse[]> {
     return this.getQuiz.getQuizzesForUser(userId);
   }
 
   async getOthersQuizzesWithoutCorrectAnswersForUser(
     userId: string
-  ): Promise<Quiz[]> {
+  ): Promise<QuizResponse[]> {
     return this.getQuiz.getOthersQuizzesWithoutCorrectAnswersForUser(userId);
   }
 }

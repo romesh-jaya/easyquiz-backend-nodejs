@@ -1,10 +1,11 @@
 import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
 import { QuizAttempt } from '../../types/Request/QuizAttempt';
+import { QuizAttemptResponse } from '../../types/Response/QuizAttemptResponse';
 
 export default class GetQuizAttempt {
   constructor(protected quizAttemptDAO: IQuizAttemptDAO) {}
 
-  async get(id: string, userId: string): Promise<QuizAttempt> {
+  async get(id: string, userId: string): Promise<QuizAttemptResponse> {
     return this.quizAttemptDAO.get(id, userId);
   }
 
@@ -13,7 +14,7 @@ export default class GetQuizAttempt {
     quizRevision: number,
     quizTaker: string,
     userId: string
-  ): Promise<QuizAttempt> {
+  ): Promise<QuizAttemptResponse> {
     return this.quizAttemptDAO.getByIdRevisionQuizTaker(
       id,
       quizRevision,

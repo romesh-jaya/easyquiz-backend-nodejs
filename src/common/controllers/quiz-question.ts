@@ -4,6 +4,7 @@ import CreateQuizQuestion from '../use-cases/quiz-question/create';
 import GetQuizQuestion from '../use-cases/quiz-question/get';
 import UpdateQuizQuestion from '../use-cases/quiz-question/update';
 import DeleteQuizQuestion from '../use-cases/quiz-question/delete';
+import { QuizQuestionResponse } from '../types/Response/QuizQuestionResponse';
 
 export default class QuizQuestionController {
   constructor(
@@ -27,7 +28,7 @@ export default class QuizQuestionController {
     return this.updateQuizQuestion.call(data, userId);
   }
 
-  async get(id: string, userId: string): Promise<QuizQuestion> {
+  async get(id: string, userId: string): Promise<QuizQuestionResponse> {
     return this.getQuizQuestion.call(id, userId);
   }
 
