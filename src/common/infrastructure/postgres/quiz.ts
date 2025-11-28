@@ -2,7 +2,7 @@ import { MESSAGE_SUCCESS } from '../../constants/messages';
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
-import postgresClient from '../../postgres';
+import postgresClient from '.';
 import { Quiz } from '../../types/Request/Quiz';
 import { QuizQuestion } from '../../types/Request/QuizQuestion';
 import { QuizResponse } from '../../types/Response/QuizResponse';

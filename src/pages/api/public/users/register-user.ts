@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { auth } from '../../../../common/firebase';
+import { auth } from '../../../../common/infrastructure/firebase';
 import { IFirebaseAuthError } from '../../../../common/interfaces/Other/IFirebaseAuthError';
-import { runCorsMiddleware } from '../../../../common/middleware/cors';
+import { runCorsMiddleware } from '../../../../common/infrastructure/express/middleware/cors';
 import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-user-controller';
 import { MESSAGE_ERROR } from '../../../../common/constants/messages';
 import { v4 as uuidv4 } from 'uuid';

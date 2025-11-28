@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { IPostgresError } from '../interfaces/Other/IPostgresError';
-import postgresClient from '../postgres';
+import postgresClient from '../infrastructure/postgres';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserIDFromAuthToken } from './auth';
 import { CRUDActionType } from '../enums/CRUDActionType';

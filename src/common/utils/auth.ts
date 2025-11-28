@@ -1,7 +1,7 @@
 import { VercelRequest } from '@vercel/node';
 import { UserInfo } from '../types/Request/UserInfo';
-import { auth } from '../firebase';
-import postgresClient from '../postgres';
+import { auth } from '../infrastructure/firebase';
+import postgresClient from '../infrastructure/postgres';
 
 export const getAuthToken = (req: VercelRequest): string | null => {
   if (

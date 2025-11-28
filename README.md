@@ -20,17 +20,17 @@ This layered approach allows features to be developed, tested, and modified inde
 src/
 ├── common/
 │   ├── use-cases/         # Business logic organized by domain (quiz, user, quiz-attempt, quiz-question)
-│   ├── infrastructure/    # Data access layer with Postgres and Logger implementations
-│   │   ├── postgres/      # Database models and controllers
-│   │   └── logger/        # Logging utilities
+│   ├── infrastructure/    # Data access layer with external service integrations
+│   │   ├── firebase/      # Firebase authentication client initialization
+│   │   ├── postgres/      # Database models, repositories, and controllers
+│   │   ├── logger/        # Logging utilities
+│   │   └── express/       # Express framework configuration
 │   ├── controllers/       # Domain controllers coordinating use cases
 │   ├── interfaces/        # DAO and data transfer object contracts
 │   ├── types/            # TypeScript type definitions for requests/responses
 │   ├── enums/            # Shared enumerations (QuizStatus, CRUDActionType)
 │   ├── constants/        # Application constants and messages
-│   ├── middleware/       # Express middleware (CORS, auth)
-│   ├── firebase.ts       # Firebase authentication integration
-│   └── postgres.ts       # Postgres database client initialization
+│   ├── utils/            # Helper utilities for business logic
 └── pages/
     └── api/              # NextJS API routes
         ├── public/       # Unauthenticated endpoints

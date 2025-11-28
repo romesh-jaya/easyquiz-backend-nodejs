@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { runCorsMiddleware } from '../../../../../../common/middleware/cors';
+import { runCorsMiddleware } from '../../../../../../common/infrastructure/express/middleware/cors';
 
 import controllerPostgres from '../../../../../../common/infrastructure/postgres/controllers/postgres-question-controller';
 import { QuizQuestion } from '../../../../../../common/types/Request/QuizQuestion';

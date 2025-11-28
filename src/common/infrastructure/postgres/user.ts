@@ -2,7 +2,7 @@ import { MESSAGE_SUCCESS } from '../../constants/messages';
 import { IUserDAO } from '../../interfaces/DAO/IUserDAO';
 import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
-import postgresClient from '../../postgres';
+import postgresClient from '.';
 import { UserInfo } from '../../types/Request/UserInfo';
 import { UserInfoResponse } from '../../types/Response/UserInfoResponse';
 import { Logger } from '../logger/logger';
