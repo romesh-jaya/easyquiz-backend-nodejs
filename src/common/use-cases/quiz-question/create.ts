@@ -24,7 +24,7 @@ export default class CreateQuizQuestion {
 
     if (!questionResponse.error) {
       let quiz = await this.quizDAO.get(data.quizId as string, userId);
-      let existingQuestionOrder = (quiz as any).question_order || [];
+      let existingQuestionOrder = quiz.question_order || [];
       existingQuestionOrder.push(uuid);
 
       // Shows power of Clean architecture

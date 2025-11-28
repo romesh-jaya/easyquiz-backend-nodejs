@@ -20,14 +20,14 @@ export default class DeleteQuizQuestion {
         (question as any).quiz_id as string,
         userId
       );
-      let existingQuestionOrder = (quiz as any).question_order;
+      let existingQuestionOrder = quiz.question_order;
       let newQuestionOrder = existingQuestionOrder.filter(
         (questionId: string) => questionId !== id
       );
 
       // Shows power of Clean architecture
       await this.quizDAO.updateQuestionOrder(
-        (question as any).quiz_id as string,
+        question.quiz_id as string,
         newQuestionOrder,
         userId
       );
