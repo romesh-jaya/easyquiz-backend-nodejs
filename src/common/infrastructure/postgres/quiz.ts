@@ -3,8 +3,8 @@ import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
-import { Quiz } from '../../types/Quiz';
-import { QuizQuestion } from '../../types/QuizQuestion';
+import { Quiz } from '../../types/Request/Quiz';
+import { QuizQuestion } from '../../types/Request/QuizQuestion';
 import { Logger } from '../logger/logger';
 
 export default class QuizPostgresDAO implements IQuizDAO {
@@ -107,7 +107,7 @@ export default class QuizPostgresDAO implements IQuizDAO {
         const queryText =
           'SELECT * FROM public.quiz WHERE created_by_user = $1 AND id = $2';
         const data = await client.query(queryText, [userId, id]);
-        return data?.rows;
+        return data?.rows?.[0];
       } finally {
         client.release();
       }

@@ -1,4 +1,4 @@
-import { Quiz } from '../../types/Quiz';
+import { Quiz } from '../../types/Request/Quiz';
 import { IResponse } from '../Other/IResponse';
 
 export interface IQuizDAO {

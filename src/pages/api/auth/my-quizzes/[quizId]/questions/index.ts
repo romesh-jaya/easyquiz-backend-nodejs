@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runCorsMiddleware } from '../../../../../../common/middleware/cors';
 
 import controllerPostgres from '../../../../../../common/infrastructure/postgres/controllers/postgres-question-controller';
-import { QuizQuestion } from '../../../../../../common/types/QuizQuestion';
+import { QuizQuestion } from '../../../../../../common/types/Request/QuizQuestion';
 import { getUserIDFromAuthToken } from '../../../../../../common/utils/auth';
 import { MESSAGE_ERROR } from '../../../../../../common/constants/messages';
 

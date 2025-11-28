@@ -3,7 +3,7 @@ import { IQuizQuestionDAO } from '../../interfaces/DAO/IQuizQuestionDAO';
 import { IPostgresError } from '../../interfaces/Other/IPostgresError';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
-import { QuizQuestion } from '../../types/QuizQuestion';
+import { QuizQuestion } from '../../types/Request/QuizQuestion';
 import { Logger } from '../logger/logger';
 import QuizPostgresDAO from './quiz';
 

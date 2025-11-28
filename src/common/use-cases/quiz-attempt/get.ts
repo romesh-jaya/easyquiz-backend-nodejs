@@ -1,5 +1,5 @@
 import { IQuizAttemptDAO } from '../../interfaces/DAO/IQuizAttemptDAO';
-import { QuizAttempt } from '../../types/QuizAttempt';
+import { QuizAttempt } from '../../types/Request/QuizAttempt';
 
 export default class GetQuizAttempt {
   constructor(protected quizAttemptDAO: IQuizAttemptDAO) {}

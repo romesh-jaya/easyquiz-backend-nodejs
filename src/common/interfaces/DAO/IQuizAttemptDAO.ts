@@ -1,5 +1,5 @@
-import { Quiz } from '../../types/Quiz';
-import { QuizAttempt } from '../../types/QuizAttempt';
+import { Quiz } from '../../types/Request/Quiz';
+import { QuizAttempt } from '../../types/Request/QuizAttempt';
 import { IResponse } from '../Other/IResponse';
 
 export interface IQuizAttemptDAO {

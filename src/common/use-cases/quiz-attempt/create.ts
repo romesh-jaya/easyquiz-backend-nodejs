@@ -3,8 +3,8 @@ import { IAnswer } from '../../interfaces/Other/IAnswer';
 import { IQuestionWithoutCorrectAnswers } from '../../interfaces/Other/IQuestionWithoutCorrectAnswers';
 import { IResponse } from '../../interfaces/Other/IResponse';
 import postgresClient from '../../postgres';
-import { Quiz } from '../../types/Quiz';
-import { QuizAttempt } from '../../types/QuizAttempt';
+import { Quiz } from '../../types/Request/Quiz';
+import { QuizAttempt } from '../../types/Request/QuizAttempt';
 import { getQuestionsForQuizInOrder } from '../../utils/questions';
 
 export default class CreateQuizAttempt {

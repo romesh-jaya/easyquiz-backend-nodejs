@@ -1,5 +1,5 @@
 import { IResponse } from '../interfaces/Other/IResponse';
-import { Quiz } from '../types/Quiz';
+import { Quiz } from '../types/Request/Quiz';
 import CreateQuiz from '../use-cases/quiz/create';
 import GetQuiz from '../use-cases/quiz/get';
 import InviteQuizTaker from '../use-cases/quiz/inviteQuizTaker';

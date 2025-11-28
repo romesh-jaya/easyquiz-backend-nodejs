@@ -13,7 +13,7 @@ let controller = new QuizQuestionController(
   new CreateQuizQuestion(quizQuestionDAO, quizDAO),
   new GetQuizQuestion(quizQuestionDAO),
   new UpdateQuizQuestion(quizQuestionDAO),
-  new DeleteQuizQuestion(quizQuestionDAO)
+  new DeleteQuizQuestion(quizQuestionDAO, quizDAO)
 );
 
 export default controller;

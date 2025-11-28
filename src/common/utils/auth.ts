@@ -1,5 +1,5 @@
 import { VercelRequest } from '@vercel/node';
-import { UserInfo } from '../types/UserInfo';
+import { UserInfo } from '../types/Request/UserInfo';
 import { auth } from '../firebase';
 import postgresClient from '../postgres';
 

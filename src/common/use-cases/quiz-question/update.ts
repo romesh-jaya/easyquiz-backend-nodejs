@@ -1,6 +1,6 @@
 import { IQuizQuestionDAO } from '../../interfaces/DAO/IQuizQuestionDAO';
 import { IResponse } from '../../interfaces/Other/IResponse';
-import { QuizQuestion } from '../../types/QuizQuestion';
+import { QuizQuestion } from '../../types/Request/QuizQuestion';
 
 export default class UpdateQuizQuestion {
   constructor(protected quizQuestionDAO: IQuizQuestionDAO) {}

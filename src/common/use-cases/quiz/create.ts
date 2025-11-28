@@ -1,6 +1,6 @@
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 import { IResponse } from '../../interfaces/Other/IResponse';
-import { Quiz } from '../../types/Quiz';
+import { Quiz } from '../../types/Request/Quiz';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class CreateQuiz {

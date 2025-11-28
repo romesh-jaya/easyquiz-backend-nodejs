@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { IQuizQuestionDAO } from '../../interfaces/DAO/IQuizQuestionDAO';
 import { IResponse } from '../../interfaces/Other/IResponse';
-import { QuizQuestion } from '../../types/QuizQuestion';
+import { QuizQuestion } from '../../types/Request/QuizQuestion';
 import { IQuizDAO } from '../../interfaces/DAO/IQuizDAO';
 
 export default class CreateQuizQuestion {
@@ -26,6 +26,8 @@ export default class CreateQuizQuestion {
       let quiz = await this.quizDAO.get(data.quizId as string, userId);
       let existingQuestionOrder = (quiz as any).question_order || [];
       existingQuestionOrder.push(uuid);
+
+      // Shows power of Clean architecture
       await this.quizDAO.updateQuestionOrder(
         data.quizId as string,
         existingQuestionOrder,
