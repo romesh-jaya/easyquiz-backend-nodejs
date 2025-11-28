@@ -1,48 +1,44 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
-import postgresClient from '../../../../common/postgres';
 import { getUserIDFromAuthToken } from '../../../../common/utils/auth';
+import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-user-controller';
+import { MESSAGE_ERROR } from '../../../../common/constants/messages';
 
-export default async function (req: VercelRequest, res: VercelResponse) {
-  let data;
+export let controller = controllerPostgres;
 
-  await runCorsMiddleware(req, res);
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
-    return res.status(405).end('Method Not Allowed');
-  }
-
+const getUser = async (req: VercelRequest, res: VercelResponse) => {
   const userInfo = await getUserIDFromAuthToken(req);
   if (userInfo.error) {
     return res.status(400).send(userInfo.error);
   }
 
-  // At this point, we definitely know the user's email
   const userId = userInfo.userId ?? '';
 
-  try {
-    const client = await postgresClient.connect();
-    try {
-      const queryText = 'SELECT * FROM public.quiz_user WHERE id = $1';
-      data = await client.query(queryText, [userId]);
-      if (!data?.rows[0]) {
-        return res
-          .status(400)
-          .send(`Error: no userdata was found for user: ${userId}`);
-      }
-    } finally {
-      client.release();
-    }
-  } catch (err) {
-    return res.status(500).send({
-      message: 'Error querying quiz_user table in DB',
-    });
+  let response = await controller.get(userId);
+  if (!response) {
+    return res
+      .status(400)
+      .send(`Error: no userdata was found for user: ${userId}`);
   }
 
-  res.status(200).send(data?.rows[0]);
+  return res.status(200).send(response);
+};
+
+export default async function (req: VercelRequest, res: VercelResponse) {
+  await runCorsMiddleware(req, res);
+
+  try {
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    if (req.method === 'GET') {
+      return await getUser(req, res);
+    }
+  } catch (error) {
+    return res.status(500).send((error as any)?.message || MESSAGE_ERROR);
+  }
+
+  res.setHeader('Allow', 'GET');
+  return res.status(405).end('Method Not Allowed');
 }

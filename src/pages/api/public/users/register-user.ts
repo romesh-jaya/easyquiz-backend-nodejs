@@ -1,54 +1,30 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { auth } from '../../../../common/firebase';
 import { IFirebaseAuthError } from '../../../../common/interfaces/Other/IFirebaseAuthError';
-import { IPostgresError } from '../../../../common/interfaces/Other/IPostgresError';
 import { runCorsMiddleware } from '../../../../common/middleware/cors';
-import postgresClient from '../../../../common/postgres';
+import controllerPostgres from '../../../../common/infrastructure/postgres/controllers/postgres-user-controller';
+import { MESSAGE_ERROR } from '../../../../common/constants/messages';
 import { v4 as uuidv4 } from 'uuid';
 
-export default async function (req: VercelRequest, res: VercelResponse) {
-  await runCorsMiddleware(req, res);
+export let controller = controllerPostgres;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).end('Method Not Allowed');
-  }
-
+const registerUser = async (req: VercelRequest, res: VercelResponse) => {
   const { email, password, firstName, lastName } = req.body;
 
-  if (!email || !password || !firstName || !lastName) {
-    return res
-      .status(400)
-      .send(
-        'Error: email, firstName, lastName or password was found to be empty'
-      );
+  if (!password) {
+    return res.status(400).send('Error: password was found to be empty');
   }
 
-  // Note: we return status 200 in some cases as we need to send a JS object
-  try {
-    const client = await postgresClient.connect();
-    try {
-      const queryText = 'SELECT * FROM public.quiz_user WHERE email = $1';
-      let data = await client.query(queryText, [email]);
-      if (data?.rows[0]) {
-        return res.status(200).send({
-          error: 'Email address is already in use',
-          isGeneralError: true,
-        });
-      }
-    } finally {
-      client.release();
-    }
-  } catch (err) {
-    console.error('Error while signing up: ', (err as any)?.message);
-    return res.status(200).send({
-      error: 'Unknown error occured while trying to signup',
-      isGeneralError: false,
-    });
+  const userId = uuidv4();
+  let response = await controller.create({
+    userId,
+    email,
+    firstName,
+    lastName,
+  });
+
+  if (response.error) {
+    return res.status(200).send(response);
   }
 
   try {
@@ -62,33 +38,9 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  try {
-    const client = await postgresClient.connect();
-    try {
-      await client.query('BEGIN');
-      const uuid = uuidv4();
-      const queryText =
-        'INSERT INTO public.quiz_user(id, email, first_name, last_name) VALUES ($1, $2, $3, $4)';
-      await client.query(queryText, [uuid, email, firstName, lastName]);
-      await client.query('COMMIT');
-    } catch (e) {
-      await client.query('ROLLBACK');
-      throw e;
-    } finally {
-      client.release();
-    }
-  } catch (err) {
-    const error = err as IPostgresError;
-    console.error('Error while inserting User record to DB: ', error.stack);
-    return res.status(200).send({
-      error: 'Unknown error occured while trying to signup',
-      isGeneralError: false,
-    });
-  }
-
   console.log('Successfully registered user: ', email);
-  res.status(200).send({ error: '' });
-}
+  return res.status(200).send({ error: '' });
+};
 
 async function createOrUpdateUserInAuth(email: string, password: string) {
   try {
@@ -109,4 +61,23 @@ async function createOrUpdateUserInAuth(email: string, password: string) {
       throw error;
     }
   }
+}
+
+export default async function (req: VercelRequest, res: VercelResponse) {
+  await runCorsMiddleware(req, res);
+
+  try {
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    if (req.method === 'POST') {
+      return await registerUser(req, res);
+    }
+  } catch (error) {
+    return res.status(500).send((error as any)?.message || MESSAGE_ERROR);
+  }
+
+  res.setHeader('Allow', 'POST');
+  return res.status(405).end('Method Not Allowed');
 }
