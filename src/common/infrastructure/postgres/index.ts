@@ -10,14 +10,11 @@ const postgresClient = new Pool({
   database: process.env.POSTGRES_DATABASE,
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.POSTGRES_PORT,
-  max: Number(process.env.POSTGRES_MAX_CLIENTS) || 10,
-  idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT_MS) || 30000,
-  connectionTimeoutMillis: Number(process.env.PG_CONN_TIMEOUT_MS) || 2000,
   rejectUnauthorized: false,
 });
 
 // Attach the pool to ensure idle connections close before suspension
-attachDatabasePool(postgresClient);
+// attachDatabasePool(postgresClient);
 
 // taken from https://github.com/brianc/node-pg-types/blob/master/lib/textParsers.js
 const parseTimestamp = function (value: string) {
