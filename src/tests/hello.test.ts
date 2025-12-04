@@ -4,8 +4,8 @@ import handler from '../pages/api/index';
 
 describe('/api/index', () => {
   test('should return `Server is up` text on GET request', async () => {
-    const req = new MockVercelRequest();
     const res = new MockVercelResponse();
+    const req = new MockVercelRequest();
 
     // Act
     await handler(req, res);

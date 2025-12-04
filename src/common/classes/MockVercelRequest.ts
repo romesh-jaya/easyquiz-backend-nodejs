@@ -1,5 +1,4 @@
 import { IncomingMessage } from 'http';
-import type { VercelRequest } from '@vercel/node';
 
 export class MockVercelRequest extends IncomingMessage {
   query: Record<string, string | string[]> = {};
@@ -15,14 +14,14 @@ export class MockVercelRequest extends IncomingMessage {
     headers?: Record<string, string>;
   }) {
     super({ readable: false } as any);
-    
+
     if (options) {
       this.method = options.method || 'GET';
       this.url = options.url || '/';
       this.query = options.query || {};
       this.cookies = options.cookies || {};
       this.body = options.body || null;
-      
+
       if (options.headers) {
         Object.entries(options.headers).forEach(([key, value]) => {
           this.headers[key.toLowerCase()] = value;
