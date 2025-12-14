@@ -523,9 +523,5 @@ function main() {
 
 main();
 
-export {
-  TDDTestGenerator,
-  HandlerConfig,
-  HandlerMethodConfig,
-  AI_AGENT_INSTRUCTIONS,
-};
+export { TDDTestGenerator, AI_AGENT_INSTRUCTIONS };
+export type { HandlerConfig, HandlerMethodConfig };
