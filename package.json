@@ -7,7 +7,7 @@
     "deploy": "vercel",
     "lint": "eslint --ext .ts --ignore-path .gitignore --fix",
     "check-types": "tsc --noEmit",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules node node_modules/jest/bin/jest.js",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules node node_modules/jest/bin/jest.js --silent=false --verbose",
     "prepare": "husky install"
   },
   "devDependencies": {
